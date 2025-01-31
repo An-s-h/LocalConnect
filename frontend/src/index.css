@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import "tailwindcss";
+
+
+/* In index.css or App.css */
+.localconnect-font {
+  font-family: 'Pacifico', cursive;
+  font-weight: 300;
+}
