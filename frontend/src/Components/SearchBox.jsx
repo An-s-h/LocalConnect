@@ -33,7 +33,7 @@ const SearchBox = () => {
               height: 56,
               fontSize: "1.1rem",
               backgroundColor: "transparent", // Transparent input
-              border: "1px solid rgba(255, 255, 255, 0.2)", // Light border
+              border: "2px solid rgba(255, 255, 255, 0.7)", // Light border
               color: "white", // Text color
               "& input::placeholder": { color: "rgb(209 213 219)" }, // Light placeholder
               "&:hover fieldset": { borderColor: "#3b82f6!important" },
@@ -62,7 +62,7 @@ const SearchBox = () => {
               height: 56,
               fontSize: "1.1rem",
               backgroundColor: "transparent", // Transparent input
-              border: "1px solid rgba(255, 255, 255, 0.2)", // Light border
+              border: "2px solid rgba(255, 255, 255, 0.7)", // Light border
               color: "white", // Text color
               "& input::placeholder": { color: "rgb(209 213 219)" }, // Light placeholder
               "&:hover fieldset": { borderColor: "#3b82f6!important" },

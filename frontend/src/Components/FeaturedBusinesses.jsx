@@ -19,35 +19,35 @@ const businesses = [
     hours: "9AM - 10PM",
   },
   {
-    name: "Serene Spa",
-    type: "Wellness Center",
-    rating: 4.9,
-    image: "/placeholder.svg?height=200&width=200",
-    address: "789 Pine Blvd",
-    hours: "9AM - 7PM",
+    name: "Sunrise Bakers",
+    type: "Bakery",
+    rating: 4.2,
+    image: "https://lh5.googleusercontent.com/p/AF1QipO-mmzZUsZ7WEmFUeUzhcCBVX43CB-6Of-vsGdr=w408-h272-k-no",
+    address: "Darshan Lal Chowk , Dehradun",
+    hours: "7AM - 8PM",
   },
   {
-    name: "Bookworm's Paradise",
-    type: "Bookstore & Cafe",
+    name: "Banjara Food Truck",
+    type: "Chinese Restaurant",
     rating: 4.7,
-    image: "/placeholder.svg?height=200&width=200",
-    address: "101 Cedar Ln",
+    image: "https://lh5.googleusercontent.com/p/AF1QipMeqRElpbWnYkMuzCgB1nqWQXkovwGwoiqcEsXN=w426-h240-k-no",
+    address: "Hathibarkala Salwala, Dehradun",
     hours: "8AM - 10PM",
   },
   {
-    name: "Bookworm's Paradise",
-    type: "Bookstore & Cafe",
-    rating: 4.7,
-    image: "/placeholder.svg?height=200&width=200",
-    address: "101 Cedar Ln",
+    name: "Prince Plumber service",
+    type: "Plumbing Service",
+    rating: 3.9,
+    image: "https://thearchitectsdiary.com/wp-content/uploads/2022/02/Guest-Article-1-scaled.jpg",
+    address: "Paltan Bazaar, Dehradun",
     hours: "8AM - 10PM",
   },
 ];
 
 export default function FeaturedBusinesses() {
   return (
-    <section className="bg-white py-10">
-      <h2 className="text-3xl text-center mb-8 text-black font-extrabold">Featured Local Spots</h2>
+    <section className="bg-gray-100 py-10">
+      <h2 className="text-5xl text-center mb-8 text-black font-extrabold">Featured Local Spots</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mx-6 lg:mx-60">
         {businesses.map((business) => (
           <div

@@ -16,7 +16,7 @@ const categories = [
 
 export default function ServiceCategories() {
   return (
-    <section className="absolute bottom-0 left-0 w-full bg-black/40 py-8 z-50">
+    <section className="absolute bottom-0 left-0 w-full bg-black/50 z-10 py-8 ">
       <div className="container mx-auto px-16">
         <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 gap-4 text-center">
           {categories.map((category) => (
