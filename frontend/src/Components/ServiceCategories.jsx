@@ -1,5 +1,5 @@
 import { 
-  Shirt, Leaf, Heart, BellRing, Truck, Gift, 
+  Shirt, Leaf, Heart, BellRing, Truck, Gift,Megaphone, 
   Wrench, Plug, Car 
 } from "lucide-react";
 
@@ -10,7 +10,7 @@ const categories = [
   { name: "Education", icon: BellRing },
   { name: "Health", icon: Heart },
   { name: "Events", icon: BellRing },
-  { name: "Logistics ", icon: Truck },
+  { name: "Advertising ", icon: Megaphone },
   { name: "Stationaries", icon: Gift },
 ];
 

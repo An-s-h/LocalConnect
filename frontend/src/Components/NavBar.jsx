@@ -34,14 +34,7 @@ const NavBar = () => {
 
         {/* Navigation Links - Hidden on Mobile */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link
-            to="/"
-            className={`${
-              isScrolled ? "text-black" : "text-white"
-            } hover:text-blue-500 transition-colors font-medium`}
-          >
-            Home
-          </Link>
+         
           <Link
             to="/categories"
             className={`${
@@ -54,7 +47,7 @@ const NavBar = () => {
             to="/add-business"
             className={`${
               isScrolled ? "text-black" : "text-white"
-            } px-4 py-2 bg-transparent border border-blue-400 rounded-full hover:bg-blue-50 hover:border-blue-600 transition-all font-medium`}
+            } px-4 py-2 bg-transparent border border-blue-400 rounded-full hover:bg-blue-500 hover:border-blue-600 transition-all font-medium`}
           >
             Add Business
           </Link>

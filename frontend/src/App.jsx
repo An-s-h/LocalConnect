@@ -1,16 +1,18 @@
 import React from 'react'
-import Hero from './Components/Hero'
-import Navbar from './Components/NavBar'
-import FeaturedBusinesses from './Components/FeaturedBusinesses'
-import ServiceCategories from './Components/ServiceCategories'
+import { Routes,Route } from 'react-router-dom'
+import Home from './Pages.jsx/Home'
+import Categories from './Pages.jsx/Categories'
+import AddBusiness from './Pages.jsx/AddBusiness'
+
 
 const App = () => {
   return (
-    <>
-    <Navbar/>
-    <Hero/>
-    <FeaturedBusinesses/>
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path='/categories' element={<Categories/>} />
+      <Route path='/add-business' element={<AddBusiness/>} />
+   
+    </Routes>
   )
 }
 
