@@ -46,36 +46,58 @@ const businesses = [
 
 export default function FeaturedBusinesses() {
   return (
-    <section className="bg-gray-100 py-10">
-      <h2 className="text-5xl text-center mb-8 text-black font-extrabold">Featured Local Spots</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mx-6 lg:mx-60">
+    <section className="bg-white py-12">
+      {/* Section Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+          Featured Local Spots
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Explore the best local businesses in your community.
+        </p>
+      </div>
+
+      {/* Businesses Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 px-6 [width:100rem] mx-auto">
         {businesses.map((business) => (
           <div
             key={business.name}
-            className="cursor-pointer hover:shadow-md transition-shadow overflow-hidden group bg-gray-300 rounded-lg"
+            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
           >
-            <div className="relative h-28 overflow-hidden">
+            {/* Image */}
+            <div className="relative h-48 overflow-hidden rounded-t-xl">
               <img
-                src={business.image || "/placeholder.svg"}
+                src={business.image}
                 alt={business.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200 ease-in-out"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent" />
             </div>
-            <div className="p-3">
-              <h3 className="text-lg font-semibold group-hover:text-teal-600 transition-colors duration-200">
+
+            {/* Content */}
+            <div className="p-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 {business.name}
               </h3>
-              <p className="text-gray-600 text-sm mb-1">{business.type}</p>
+              <p className="text-gray-600 text-sm mb-2">{business.type}</p>
+
+              {/* Rating */}
               <div className="flex items-center mb-2">
                 <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                <span className="font-semibold text-sm">{business.rating}</span>
+                <span className="font-medium text-sm text-gray-900">
+                  {business.rating}
+                </span>
               </div>
-              <div className="flex items-center text-xs text-gray-500 mb-1">
-                <MapPin className="h-4 w-4 mr-1" />
+
+              {/* Address */}
+              <div className="flex items-center text-sm text-gray-600 mb-1">
+                <MapPin className="h-4 w-4 mr-1 text-gray-500" />
                 <span>{business.address}</span>
               </div>
-              <div className="flex items-center text-xs text-gray-500">
-                <Clock className="h-4 w-4 mr-1" />
+
+              {/* Hours */}
+              <div className="flex items-center text-sm text-gray-600">
+                <Clock className="h-4 w-4 mr-1 text-gray-500" />
                 <span>{business.hours}</span>
               </div>
             </div>

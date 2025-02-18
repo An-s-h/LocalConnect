@@ -4,13 +4,17 @@ import Hero from '../Components/Hero'
 import FeaturedBusinesses from '../Components/FeaturedBusinesses'
 import '../index.css'
 import WhyLocal from '../Components/WhyLocal'
+import TrendingDeals from '../Components/TrendingDeals'
+import Footer from '../Components/Footer'
 const Home = () => {
   return (
     <>
     <NavBar/>
     <Hero/>
     <FeaturedBusinesses/>
+    <TrendingDeals/>
     <WhyLocal/>
+    <Footer/>
     </>
   )
 }

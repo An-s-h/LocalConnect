@@ -47,7 +47,7 @@ const CategoriesPage = () => {
       <NavBar />
       
       {/* Promotional Banner */}
-      <div className="bg-black text-white py-3 px-4 text-center text-sm font-medium pt-15">
+      <div className="bg-black text-white py-3 px-4 text-center text-sm font-medium pt-20 lg:pt-15">
         🚀 Discover new categories every week! Explore now ➔
       </div>
 

@@ -34,7 +34,6 @@ const NavBar = () => {
 
         {/* Navigation Links - Hidden on Mobile */}
         <div className="hidden md:flex items-center space-x-8">
-         
           <Link
             to="/categories"
             className={`${
@@ -63,7 +62,9 @@ const NavBar = () => {
 
         {/* Hamburger Menu - Visible on Mobile */}
         <button
-          className="md:hidden text-black z-50"
+          className={`md:hidden transition-colors duration-300 ${
+            isScrolled ? "text-black" : "text-white"
+          } z-50`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
