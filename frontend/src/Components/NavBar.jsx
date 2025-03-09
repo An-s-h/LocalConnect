@@ -1,6 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Import hamburger and close icons
+import { Menu, X } from "lucide-react"; // Import icons
+
+const DrawOutlineButton = ({ children, isScrolled, ...rest }) => {
+  return (
+    <button
+      {...rest}
+      className={`relative w-full font-medium py-3 px-6 overflow-hidden transition-all duration-300 disabled:opacity-50 group ${
+        isScrolled ? "text-black" : "text-white"
+      }`}
+    >
+      {/* Button background with gradient and hover effect */}
+      <span className="absolute inset-0 bg-gradient-to-r transition-all duration-300"></span>
+
+      {/* Shine effect on hover */}
+      <span className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-10 skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-all duration-700"></span>
+
+      {/* Button content */}
+      <span className="relative flex items-center justify-center gap-2">
+        {children}
+      </span>
+
+      {/* Outline animations */}
+      <span className="absolute left-0 top-0 h-[2px] w-0 bg-white group-hover:w-full transition-all duration-300 group-hover:duration-500" />
+      <span className="absolute right-0 top-0 h-0 w-[2px] bg-white group-hover:h-full transition-all duration-300 group-hover:duration-500 delay-100" />
+      <span className="absolute bottom-0 right-0 h-[2px] w-0 bg-white group-hover:w-full transition-all duration-300 group-hover:duration-500 delay-200" />
+      <span className="absolute bottom-0 left-0 h-0 w-[2px] bg-white group-hover:h-full transition-all duration-300 group-hover:duration-500 delay-300" />
+    </button>
+  );
+};
+
 
 const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,7 +62,7 @@ const NavBar = () => {
         </Link>
 
         {/* Navigation Links - Hidden on Mobile */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           <Link
             to="/categories"
             className={`${
@@ -43,13 +72,11 @@ const NavBar = () => {
             Categories
           </Link>
           <Link
-            to="/add-business"
-            className={`${
-              isScrolled ? "text-black" : "text-white"
-            } px-4 py-2 bg-transparent border border-blue-400 rounded-full hover:bg-blue-500 hover:border-blue-600 transition-all font-medium`}
-          >
-            Add Business
+            to="/add-business">
+            <DrawOutlineButton isScrolled={isScrolled}>Add Business</DrawOutlineButton>
           </Link>
+          {/* Sign Up Button */}
+          
           <Link
             to="/contact"
             className={`${
@@ -57,6 +84,9 @@ const NavBar = () => {
             } hover:text-blue-500 transition-colors font-medium`}
           >
             Contact Us
+          </Link>
+          <Link to="/signup">
+            <DrawOutlineButton isScrolled={isScrolled}>Sign-Up</DrawOutlineButton>
           </Link>
         </div>
 
@@ -101,6 +131,14 @@ const NavBar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Add Business
+            </Link>
+            {/* Normal Sign Up Button in Mobile Menu */}
+            <Link
+              to="/signup"
+              className="text-lg font-medium text-white px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-600 transition"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Sign Up
             </Link>
             <Link
               to="/contact"

@@ -1,46 +1,56 @@
-import React from 'react';
-import { Star, MapPin, Clock } from 'lucide-react';
+import React from "react";
+import { Star, MapPin, Clock } from "lucide-react";
 
 const businesses = [
   {
-    name: "Smart & Style Unisex Saloon",
-    type: "Saloon",
+    name: "Café Greek Orchid",
+    type: "Cafe",
     rating: 4.8,
-    image: "https://lh5.googleusercontent.com/p/AF1QipPXcehf5gSlv28ZhyDOIhrpey0YJkisStBgXav2=w408-h272-k-no",
-    address: "Dalanwala , Dehradun",
-    hours: "10AM - 8PM",
+    image:
+      "https://imgmediagumlet.lbb.in/media/2018/12/5c0e8b8eeabd9b1ed3bfb6d2_1544457102822.jpg",
+    address: "13 EC-Road , Dehradun",
+    hours: "7AM - 9PM",
+    link: "/bc",
   },
   {
     name: "UK BEST MOBILE STORE",
     type: "Mobile Phone Repair Shop",
     rating: 4.6,
-    image: "https://lh5.googleusercontent.com/p/AF1QipMpiPjDBkI9VTBYOSDe8nMip8MV1_cvMauhIc0K=w408-h306-k-no",
+    image:
+      "https://lh5.googleusercontent.com/p/AF1QipMpiPjDBkI9VTBYOSDe8nMip8MV1_cvMauhIc0K=w408-h306-k-no",
     address: "Kalidas Marg , Dehradun",
     hours: "9AM - 10PM",
+    link: "#",
   },
   {
     name: "Sunrise Bakers",
     type: "Bakery",
     rating: 4.2,
-    image: "https://lh5.googleusercontent.com/p/AF1QipO-mmzZUsZ7WEmFUeUzhcCBVX43CB-6Of-vsGdr=w408-h272-k-no",
+    image:
+      "https://lh5.googleusercontent.com/p/AF1QipO-mmzZUsZ7WEmFUeUzhcCBVX43CB-6Of-vsGdr=w408-h272-k-no",
     address: "Darshan Lal Chowk , Dehradun",
     hours: "7AM - 8PM",
+    link: "#",
   },
   {
     name: "Banjara Food Truck",
     type: "Chinese Restaurant",
     rating: 4.7,
-    image: "https://lh5.googleusercontent.com/p/AF1QipMeqRElpbWnYkMuzCgB1nqWQXkovwGwoiqcEsXN=w426-h240-k-no",
+    image:
+      "https://lh5.googleusercontent.com/p/AF1QipMeqRElpbWnYkMuzCgB1nqWQXkovwGwoiqcEsXN=w426-h240-k-no",
     address: "Hathibarkala Salwala, Dehradun",
     hours: "8AM - 10PM",
+    link: "#",
   },
   {
     name: "Prince Plumber service",
     type: "Plumbing Service",
     rating: 3.9,
-    image: "https://thearchitectsdiary.com/wp-content/uploads/2022/02/Guest-Article-1-scaled.jpg",
+    image:
+      "https://thearchitectsdiary.com/wp-content/uploads/2022/02/Guest-Article-1-scaled.jpg",
     address: "Paltan Bazaar, Dehradun",
     hours: "8AM - 10PM",
+    link: "#",
   },
 ];
 
@@ -60,9 +70,12 @@ export default function FeaturedBusinesses() {
       {/* Businesses Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 px-6 [width:100rem] mx-auto">
         {businesses.map((business) => (
-          <div
+          <a
             key={business.name}
-            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+            href={business.link}
+            target=""
+            rel=""
+            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 block"
           >
             {/* Image */}
             <div className="relative h-48 overflow-hidden rounded-t-xl">
@@ -101,7 +114,7 @@ export default function FeaturedBusinesses() {
                 <span>{business.hours}</span>
               </div>
             </div>
-          </div>
+          </a>
         ))}
       </div>
     </section>

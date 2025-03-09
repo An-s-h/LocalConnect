@@ -13,7 +13,7 @@ function BusinessComponent() {
     hours: "Mon-Sun: 7:00 AM - 9:00 PM",
     phone: "+91 8006027270",
     address: "Indian Oil Pump, 13, EC Road, opposite Hotel Lemarq, near Survey Chouk, Irrigation Colony, Karanpur, Dehradun, Uttarakhand 248001",
-    paymentMethods: ["Visa", "Mastercard", "Amex", "Apple Pay", "Google Pay"],
+    paymentMethods: ["Cash","Visa", "Mastercard", "Swiggy Pay", "Zomato Pay"],
     amenities: ["Free WiFi", "Outdoor Seating", "Pet-Friendly", "Accessible"],
     specialties: ["Cold Brew Bar", "Vegetarian/Vegan Options", "Gluten-Free Bakery"]
   };
