@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Import icons
+import { Menu, X } from "lucide-react";
+import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { signOut } from "firebase/auth"; // Import signOut function
 
 const DrawOutlineButton = ({ children, isScrolled, ...rest }) => {
   return (
@@ -10,18 +13,11 @@ const DrawOutlineButton = ({ children, isScrolled, ...rest }) => {
         isScrolled ? "text-black" : "text-white"
       }`}
     >
-      {/* Button background with gradient and hover effect */}
       <span className="absolute inset-0 bg-gradient-to-r transition-all duration-300"></span>
-
-      {/* Shine effect on hover */}
       <span className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-10 skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-all duration-700"></span>
-
-      {/* Button content */}
       <span className="relative flex items-center justify-center gap-2">
         {children}
       </span>
-
-      {/* Outline animations */}
       <span className="absolute left-0 top-0 h-[2px] w-0 bg-white group-hover:w-full transition-all duration-300 group-hover:duration-500" />
       <span className="absolute right-0 top-0 h-0 w-[2px] bg-white group-hover:h-full transition-all duration-300 group-hover:duration-500 delay-100" />
       <span className="absolute bottom-0 right-0 h-[2px] w-0 bg-white group-hover:w-full transition-all duration-300 group-hover:duration-500 delay-200" />
@@ -30,10 +26,10 @@ const DrawOutlineButton = ({ children, isScrolled, ...rest }) => {
   );
 };
 
-
 const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +39,14 @@ const NavBar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <nav
@@ -71,12 +75,9 @@ const NavBar = () => {
           >
             Categories
           </Link>
-          <Link
-            to="/add-business">
+          <Link to="/add-business">
             <DrawOutlineButton isScrolled={isScrolled}>Add Business</DrawOutlineButton>
           </Link>
-          {/* Sign Up Button */}
-          
           <Link
             to="/contact"
             className={`${
@@ -85,9 +86,17 @@ const NavBar = () => {
           >
             Contact Us
           </Link>
-          <Link to="/signup">
-            <DrawOutlineButton isScrolled={isScrolled}>Sign-Up</DrawOutlineButton>
-          </Link>
+
+          {/* Conditional Rendering for Sign Up / Log Out Button */}
+          {user ? (
+            <button onClick={handleLogout}>
+              <DrawOutlineButton isScrolled={isScrolled}>Log Out</DrawOutlineButton>
+            </button>
+          ) : (
+            <Link to="/signup">
+              <DrawOutlineButton isScrolled={isScrolled}>Sign-Up</DrawOutlineButton>
+            </Link>
+          )}
         </div>
 
         {/* Hamburger Menu - Visible on Mobile */}
@@ -105,11 +114,11 @@ const NavBar = () => {
           className={`fixed top-0 left-0 w-full h-screen bg-black/60 backdrop-blur-lg flex items-center justify-center transition-all duration-300 ${
             isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
-          onClick={() => setIsMenuOpen(false)} // Close when clicking outside
+          onClick={() => setIsMenuOpen(false)}
         >
           <div
             className="bg-white absolute z-100 w-4/5 max-w-sm rounded-lg shadow-lg flex flex-col items-center py-8 space-y-6 transition-transform duration-300 transform"
-            onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <Link
               to="/"
@@ -132,14 +141,28 @@ const NavBar = () => {
             >
               Add Business
             </Link>
-            {/* Normal Sign Up Button in Mobile Menu */}
-            <Link
-              to="/signup"
-              className="text-lg font-medium text-white px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-600 transition"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sign Up
-            </Link>
+
+            {/* Conditional Sign Up / Log Out Button in Mobile Menu */}
+            {user ? (
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="text-lg font-medium text-white px-6 py-2 bg-red-500 rounded-full hover:bg-red-600 transition"
+              >
+                Log Out
+              </button>
+            ) : (
+              <Link
+                to="/signup"
+                className="text-lg font-medium text-white px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-600 transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            )}
+
             <Link
               to="/contact"
               className="text-lg font-medium text-gray-800 hover:text-blue-500"

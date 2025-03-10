@@ -17,7 +17,7 @@ const businesses = [
     type: "Mobile Phone Repair Shop",
     rating: 4.6,
     image:
-      "https://lh5.googleusercontent.com/p/AF1QipMpiPjDBkI9VTBYOSDe8nMip8MV1_cvMauhIc0K=w408-h306-k-no",
+      "https://content.jdmagicbox.com/comp/dehradun/g7/9999px135.x135.180721061821.s4g7/catalogue/doon-mobile-shop-dehradun-city-dehradun-mobile-phone-dealers-da8rg8iun5.jpg",
     address: "Kalidas Marg , Dehradun",
     hours: "9AM - 10PM",
     link: "#",
@@ -27,7 +27,7 @@ const businesses = [
     type: "Bakery",
     rating: 4.2,
     image:
-      "https://lh5.googleusercontent.com/p/AF1QipO-mmzZUsZ7WEmFUeUzhcCBVX43CB-6Of-vsGdr=w408-h272-k-no",
+      "https://media-cdn.tripadvisor.com/media/photo-s/12/cd/21/7d/entrance.jpg",
     address: "Darshan Lal Chowk , Dehradun",
     hours: "7AM - 8PM",
     link: "#",
@@ -37,7 +37,7 @@ const businesses = [
     type: "Chinese Restaurant",
     rating: 4.7,
     image:
-      "https://lh5.googleusercontent.com/p/AF1QipMeqRElpbWnYkMuzCgB1nqWQXkovwGwoiqcEsXN=w426-h240-k-no",
+      "https://content3.jdmagicbox.com/comp/dehradun/n4/9999px135.x135.220126214124.c4n4/catalogue/banjara-food-truck-rajpur-road-dehradun-food-trucks-5gkkt0a3v1.jpg",
     address: "Hathibarkala Salwala, Dehradun",
     hours: "8AM - 10PM",
     link: "#",
