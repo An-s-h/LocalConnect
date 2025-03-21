@@ -12,6 +12,7 @@ const AddBusiness = () => {
     description: "",
     photos: [],
     googleMapLink: ""
+    
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -24,26 +25,40 @@ const AddBusiness = () => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
   };
-
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simulate form submission
-    setTimeout(() => {
-      setSuccess(true);
-      setIsLoading(false);
-      setFormData({
-        businessName: "",
-        category: "",
-        location: "",
-        contact: "",
-        email: "",
-        description: "",
-        photos: [],
-        googleMapLink: ""
+  
+    // Rename the FormData instance to avoid naming conflict
+    const formDataToSend = new FormData();
+    
+    // Reference the state's formData correctly
+    formDataToSend.append('businessName', formData.businessName);
+    formDataToSend.append('category', formData.category);
+    formDataToSend.append('location', formData.location);
+    formDataToSend.append('contact', formData.contact);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('googleMapLink', formData.googleMapLink);
+  
+    // Append each photo file from state
+    formData.photos.forEach((photo) => {
+      formDataToSend.append('photos', photo);
+    });
+  
+    try {
+      const response = await fetch('http://localhost:8000/api/businesses', {
+        method: 'POST',
+        body: formDataToSend, // Use the renamed FormData
       });
-    }, 2000);
+      setSuccess(true);
+    }
+    catch (error) {
+      setSuccess(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

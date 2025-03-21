@@ -1,66 +1,45 @@
-import React from "react";
-import { Star, MapPin, Clock } from "lucide-react";
+// src/components/FeaturedBusinesses.js
+import React, { useEffect, useState } from "react";
+import { Star, MapPin, LoaderCircle, Image, Info } from "lucide-react";
 
-const businesses = [
-  {
-    name: "Café Greek Orchid",
-    type: "Cafe",
-    rating: 4.8,
-    image:
-      "https://imgmediagumlet.lbb.in/media/2018/12/5c0e8b8eeabd9b1ed3bfb6d2_1544457102822.jpg",
-    address: "13 EC-Road , Dehradun",
-    hours: "7AM - 9PM",
-    link: "/bc",
-  },
-  {
-    name: "UK BEST MOBILE STORE",
-    type: "Mobile Phone Repair Shop",
-    rating: 4.6,
-    image:
-      "https://content.jdmagicbox.com/comp/dehradun/g7/9999px135.x135.180721061821.s4g7/catalogue/doon-mobile-shop-dehradun-city-dehradun-mobile-phone-dealers-da8rg8iun5.jpg",
-    address: "Kalidas Marg , Dehradun",
-    hours: "9AM - 10PM",
-    link: "#",
-  },
-  {
-    name: "Sunrise Bakers",
-    type: "Bakery",
-    rating: 4.2,
-    image:
-      "https://media-cdn.tripadvisor.com/media/photo-s/12/cd/21/7d/entrance.jpg",
-    address: "Darshan Lal Chowk , Dehradun",
-    hours: "7AM - 8PM",
-    link: "#",
-  },
-  {
-    name: "Banjara Food Truck",
-    type: "Chinese Restaurant",
-    rating: 4.7,
-    image:
-      "https://content3.jdmagicbox.com/comp/dehradun/n4/9999px135.x135.220126214124.c4n4/catalogue/banjara-food-truck-rajpur-road-dehradun-food-trucks-5gkkt0a3v1.jpg",
-    address: "Hathibarkala Salwala, Dehradun",
-    hours: "8AM - 10PM",
-    link: "#",
-  },
-  {
-    name: "Prince Plumber service",
-    type: "Plumbing Service",
-    rating: 3.9,
-    image:
-      "https://thearchitectsdiary.com/wp-content/uploads/2022/02/Guest-Article-1-scaled.jpg",
-    address: "Paltan Bazaar, Dehradun",
-    hours: "8AM - 10PM",
-    link: "#",
-  },
-];
+const FeaturedBusinesses = () => {
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default function FeaturedBusinesses() {
+  useEffect(() => {
+    fetchBusinesses();
+  }, []);
+
+  // Fetch 5 featured businesses from API
+  const fetchBusinesses = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/businesses/");
+      const data = await response.json();
+      setBusinesses(data.slice(0, 4)); // Get only 5
+    } catch (error) {
+      console.error("Error fetching featured businesses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center space-y-4">
+          <LoaderCircle className="animate-spin w-12 h-12 text-indigo-600" />
+          <p className="text-gray-600 text-lg">Loading featured businesses...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <section className="bg-white py-12">
+    <section className="bg-gray-50 py-12">
       {/* Section Header */}
       <div className="text-center mb-8">
         <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
-          Featured Local Spots
+          🌟 Featured Local Spots
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Explore the best local businesses in your community.
@@ -68,55 +47,83 @@ export default function FeaturedBusinesses() {
       </div>
 
       {/* Businesses Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 px-6 [width:100rem] mx-auto">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {businesses.map((business) => (
-          <a
-            key={business.name}
-            href={business.link}
-            target=""
-            rel=""
-            className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 block"
+          <div
+            key={business._id}
+            className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-indigo-100"
           >
-            {/* Image */}
+            {/* Image Section */}
             <div className="relative h-48 overflow-hidden rounded-t-xl">
-              <img
-                src={business.image}
-                alt={business.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent" />
+              {business.photos?.length > 0 ? (
+                <img
+                  src={business.photos[0]}
+                  alt={business.name}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                  <Image className="w-14 h-14 text-gray-400" />
+                </div>
+              )}
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/90 via-white/40" />
             </div>
 
-            {/* Content */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                {business.name}
-              </h3>
-              <p className="text-gray-600 text-sm mb-2">{business.type}</p>
-
-              {/* Rating */}
-              <div className="flex items-center mb-2">
-                <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                <span className="font-medium text-sm text-gray-900">
-                  {business.rating}
+            {/* Business Content */}
+            <div className="p-5 space-y-4">
+              <div className="flex items-start justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {business.name}
+                </h2>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700">
+                  {business.category}
                 </span>
               </div>
 
-              {/* Address */}
-              <div className="flex items-center text-sm text-gray-600 mb-1">
-                <MapPin className="h-4 w-4 mr-1 text-gray-500" />
-                <span>{business.address}</span>
-              </div>
+              <div className="space-y-2.5">
+                {/* Address */}
+                <div className="flex items-center text-gray-600">
+                  <MapPin className="w-4 h-4 mr-2 text-indigo-600" />
+                  <span className="text-sm">{business.location}</span>
+                </div>
 
-              {/* Hours */}
-              <div className="flex items-center text-sm text-gray-600">
-                <Clock className="h-4 w-4 mr-1 text-gray-500" />
-                <span>{business.hours}</span>
+                {/* Description */}
+                <div className="flex items-start text-sm text-gray-600">
+                  <Info className="h-4 w-4 mr-1 text-gray-500 mt-0.5" />
+                  <p className="line-clamp-2">
+                    {business.description || "No description available."}
+                  </p>
+                </div>
+
+                {/* Rating */}
+                <div className="flex items-center">
+                  <Star className="h-4 w-4 text-yellow-500 mr-1" />
+                  <span className="text-sm font-medium text-gray-900">
+                    {business.rating}
+                  </span>
+                </div>
               </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
+
+      {/* No businesses available */}
+      {businesses.length === 0 && (
+        <div className="max-w-7xl mx-auto mt-16 text-center">
+          <div className="inline-flex flex-col items-center p-8 rounded-2xl bg-white border border-dashed border-gray-300">
+            <Image className="w-16 h-16 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-700">
+              No featured businesses available
+            </h3>
+            <p className="text-gray-500 mt-1 text-sm">
+              Please check back later for updates.
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
-}
+};
+
+export default FeaturedBusinesses;

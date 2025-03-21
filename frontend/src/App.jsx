@@ -8,6 +8,7 @@ import BusinessComponent from './Pages.jsx/BusinessComponent'
 import SignUp from './Pages.jsx/SignUp'
 import LoginSignupSlider from './Pages.jsx/LoginSignupSlider'
 import SignIn from './Pages.jsx/SignIn'
+import AdminPage from './Pages.jsx/AdminPage'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
       <Route path='/signup' element={<SignUp/>} />
       <Route path='/jj' element={<LoginSignupSlider/>} />
       <Route path='/signin' element={<SignIn/>}/>
+      <Route path='/admin' element={<AdminPage/>} />
     </Routes>
   )
 }
