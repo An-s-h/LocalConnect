@@ -9,6 +9,7 @@ import SignUp from './Pages.jsx/SignUp'
 import LoginSignupSlider from './Pages.jsx/LoginSignupSlider'
 import SignIn from './Pages.jsx/SignIn'
 import AdminPage from './Pages.jsx/AdminPage'
+import LocalSearchPage from './Pages.jsx/LocalSearchPage'
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
       <Route path='/jj' element={<LoginSignupSlider/>} />
       <Route path='/signin' element={<SignIn/>}/>
       <Route path='/admin' element={<AdminPage/>} />
+      <Route path='/search' element={<LocalSearchPage/>}/>
     </Routes>
   )
 }
