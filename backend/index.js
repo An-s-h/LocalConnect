@@ -20,6 +20,9 @@ const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
@@ -200,7 +203,6 @@ app.get("/api/business-reviews/:place_id", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Reviews API Error:", error);
     res.status(500).json({ 
       success: false,
       error: "Failed to fetch reviews",

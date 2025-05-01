@@ -2,8 +2,48 @@ import React, { useState } from 'react';
 import { auth } from '../firebase';
 import axios from 'axios';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { MapPin, Store, CheckCircle, AtSign, Lock, User, Phone, Building } from 'lucide-react';
+import { MapPin, Store, CheckCircle, AtSign, Lock, User, Phone, Building, ChevronDown, X } from 'lucide-react';
 import NavBar from '../Components/NavBar';
+
+const businessCategories = [
+  "Fast Food",
+  "Restaurant",
+  "Café",
+  "Clothing & Accessories",
+  "Retail",
+  "Hotel",
+  "Salon",
+  "Gym",
+  "Medical",
+  "Automotive",
+  "Home Services",
+  "Amusement",
+  "Education",
+  "Entertainment",
+  "Other",
+  "Pet Services",
+  "Electronics",
+  "Real Estate",
+  "Legal Services",
+  "Child Care",
+  "Cleaning Services",
+  "Events",
+  "Advertising",
+  "Stationaries",
+  "Photography Services",
+  "Financial Services",
+  "Courier & Delivery",
+  "Tour & Travel",
+  "Home Decor",
+  "Health & Wellness",
+  "Software Services",
+  "Bakeries",
+  "Florists",
+  "Furniture",
+  "Jewelry & Accessories",
+  "Sports & Fitness",
+  "Grocery Stores"
+];
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -15,17 +55,8 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-
-  const categories = [
-    'Restaurants',
-    'Groceries',
-    'Healthcare',
-    'Retail',
-    'Education',
-    'Fitness',
-    'Entertainment',
-    'Other'
-  ];
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -33,11 +64,9 @@ const SignUp = () => {
     setError('');
     
     try {
-      // Create user in Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const { uid } = userCredential.user;
 
-      // Send user data to backend
       await axios.post('http://localhost:8000/api/users/signup', {
         firebaseID: uid,
         username,
@@ -49,7 +78,6 @@ const SignUp = () => {
       });
 
       setSuccess(true);
-      // Reset form
       setEmail('');
       setPassword('');
       setUsername('');
@@ -63,24 +91,30 @@ const SignUp = () => {
     }
   };
 
-  const handleCategoryChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setPreferences([...preferences, value]);
+  const handleCategoryChange = (category) => {
+    if (preferences.includes(category)) {
+      setPreferences(preferences.filter((c) => c !== category));
     } else {
-      setPreferences(preferences.filter((category) => category !== value));
+      setPreferences([...preferences, category]);
     }
   };
+
+  const removeCategory = (category) => {
+    setPreferences(preferences.filter((c) => c !== category));
+  };
+
+  const filteredCategories = businessCategories.filter(category =>
+    category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
       <div className="bg-white">
         <div className='p-10 bg-black'>
-        <NavBar/>
+          <NavBar/>
         </div>
       </div>
-      <div className="py-15 bg-gray-50 flex flex-col items-center justify-center ">
-        {/* Logo and Header */}
+      <div className="py-15 bg-gray-50 flex flex-col items-center justify-center min-h-screen">
         <div className="w-full max-w-2xl px-4">
           <div className="mb-8 text-center">
             <div className="flex items-center justify-center mb-4">
@@ -90,7 +124,6 @@ const SignUp = () => {
             <p className="text-gray-600">Create your account to connect with local businesses</p>
           </div>
 
-          {/* Success Message */}
           {success && (
             <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-lg relative flex items-center max-w-3xl mx-auto">
               <CheckCircle className="h-6 w-6 mr-3 text-green-500" />
@@ -104,7 +137,6 @@ const SignUp = () => {
             </div>
           )}
 
-          {/* Error Message */}
           {error && (
             <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg relative max-w-3xl mx-auto">
               <span>{error}</span>
@@ -121,9 +153,7 @@ const SignUp = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Create Account</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-              {/* Left Column */}
               <div className="space-y-4">
-                {/* Email Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                   <div className="relative">
@@ -141,7 +171,6 @@ const SignUp = () => {
                   </div>
                 </div>
 
-                {/* Password Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                   <div className="relative">
@@ -160,9 +189,7 @@ const SignUp = () => {
                 </div>
               </div>
 
-              {/* Right Column */}
               <div className="space-y-4">
-                {/* Username Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                   <div className="relative">
@@ -180,7 +207,6 @@ const SignUp = () => {
                   </div>
                 </div>
 
-                {/* Phone Number Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
                   <div className="relative">
@@ -200,7 +226,6 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* Location Section */}
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
               <div className="relative">
@@ -218,29 +243,81 @@ const SignUp = () => {
               </div>
             </div>
 
-            {/* Interests Section */}
+            {/* Enhanced Categories Selection */}
             <div className="mt-6">
               <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
                 <MapPin className="h-5 w-5 mr-2 text-black" />
                 Preferred Categories
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {categories.map((category) => (
-                  <label key={category} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg border border-gray-200 hover:border-indigo-200 hover:bg-indigo-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      value={category}
-                      onChange={handleCategoryChange}
-                      checked={preferences.includes(category)}
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="text-sm text-gray-700">{category}</span>
-                  </label>
-                ))}
+              
+              {/* Selected Categories Chips */}
+              {preferences.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {preferences.map((category) => (
+                    <div key={category} className="flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">
+                      {category}
+                      <button 
+                        type="button"
+                        onClick={() => removeCategory(category)}
+                        className="ml-2 text-indigo-500 hover:text-indigo-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Multi-select Dropdown */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-full flex items-center justify-between px-4 py-2.5 text-left bg-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <span className="text-gray-700">
+                    {preferences.length > 0 ? `${preferences.length} selected` : "Select categories"}
+                  </span>
+                  <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isDropdownOpen ? 'transform rotate-180' : ''}`} />
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-auto">
+                    <div className="sticky top-0 bg-white p-2 border-b">
+                      <input
+                        type="text"
+                        placeholder="Search categories..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="py-1">
+                      {filteredCategories.length > 0 ? (
+                        filteredCategories.map((category) => (
+                          <label 
+                            key={category} 
+                            className={`flex items-center px-4 py-2 hover:bg-indigo-50 cursor-pointer ${preferences.includes(category) ? 'bg-indigo-50' : ''}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={preferences.includes(category)}
+                              onChange={() => handleCategoryChange(category)}
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3"
+                            />
+                            <span className="text-sm text-gray-700">{category}</span>
+                          </label>
+                        ))
+                      ) : (
+                        <div className="px-4 py-2 text-sm text-gray-500">No categories found</div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
+              <p className="mt-1 text-xs text-gray-500">Select categories you're interested in</p>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-8">
               <button
                 type="submit"

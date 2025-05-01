@@ -68,6 +68,22 @@ const BusinessSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  }, hours: {
+    type: String,
+    default: "9:00 AM - 9:00 PM"
+  },
+  specialties: {
+    type: String,
+    trim: true
+  },
+  service_options: {
+    delivery: { type: Boolean, default: false },
+    takeaway: { type: Boolean, default: false },
+    dine_in: { type: Boolean, default: false },
+    outdoor_seating: { type: Boolean, default: false },
+    wheelchair_accessible: { type: Boolean, default: false },
+    free_wifi: { type: Boolean, default: false },
+    parking: { type: Boolean, default: false }
   },
   
 });
