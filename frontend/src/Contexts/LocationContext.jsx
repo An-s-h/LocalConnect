@@ -24,7 +24,7 @@ export const LocationProvider = ({ children }) => {
           const { latitude, longitude } = position.coords;
           try {
             const response = await fetch(
-              `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=469c8c4c7af34d4580ffaf9690e2ffa0`
+              `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=${import.meta.env.VITE_GEOAPIFY_API_KEY}`
             );
             const data = await response.json();
             const locationInfo = data.features[0]?.properties;
