@@ -13,7 +13,9 @@ const FeaturedBusinesses = () => {
   // Fetch 5 featured businesses from API
   const fetchBusinesses = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/businesses/");
+      const response = await fetch(
+        "https://local-connect-pi.vercel.app/api/businesses/"
+      );
       const data = await response.json();
       setBusinesses(data.slice(0, 4)); // Get only 5
     } catch (error) {
@@ -28,7 +30,9 @@ const FeaturedBusinesses = () => {
       <div className="h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center space-y-4">
           <LoaderCircle className="animate-spin w-12 h-12 text-indigo-600" />
-          <p className="text-gray-600 text-lg">Loading featured businesses...</p>
+          <p className="text-gray-600 text-lg">
+            Loading featured businesses...
+          </p>
         </div>
       </div>
     );
