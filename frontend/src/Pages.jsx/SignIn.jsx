@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
@@ -13,6 +13,16 @@ const SignIn = () => {
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  // Handle redirect after successful login
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -33,8 +43,6 @@ const SignIn = () => {
       if (response.data) {
         console.log('User signed in successfully:', response.data);
         setSuccess(true);
-        // Instead of navigating, show success message
-        // navigate('/dashboard');
       }
     } catch (error) {
       setError('Failed to sign in. Please check your credentials.');
@@ -48,10 +56,10 @@ const SignIn = () => {
     <>
       <div className="bg-white">
         <div className="p-10 bg-black">
-        <NavBar/>
+          <NavBar/>
         </div>
       </div>
-      <div className="  flex flex-col items-center justify-center my-25">
+      <div className="flex flex-col items-center justify-center my-25">
         <div className="w-full max-w-md px-4">
           {/* Logo and Header */}
           <div className="mb-8 text-center">
@@ -64,7 +72,7 @@ const SignIn = () => {
 
           {/* Success Message */}
           {success && (
-            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center">
+            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center animate-fade-in">
               <CheckCircle className="h-5 w-5 mr-2 text-green-500" />
               <span>Logged in successfully! Redirecting...</span>
             </div>
@@ -72,7 +80,7 @@ const SignIn = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
+            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center animate-fade-in">
               <AlertTriangle className="h-5 w-5 mr-2 text-red-500" />
               <span>{error}</span>
             </div>

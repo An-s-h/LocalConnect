@@ -2,7 +2,7 @@ import { Building, ShieldCheck, Users } from "lucide-react";
 
 export default function WhyLocal() {
   return (
-    <div className="bg-gradient-to-b fgray-50rom- to-white pb-16">
+    <div className="bg-gradient-to-b fgray-50rom- to-white pb-16 pt-5">
       <div className="container mx-auto px-6 sm:px-12 lg:px-20 text-center">
         {/* Section Header */}
         <h2 className="text-4xl font-extrabold text-gray-900 mb-6">
