@@ -429,29 +429,29 @@ const LocalSearchPage = () => {
       <NavBar />
       <div className="min-h-screen bg-gray-100 p-4 md:p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="bg-white rounded-xl shadow-md p-4 md:p-6 mb-8">
             <form onSubmit={handleSearch} className="space-y-4">
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 <input
                   type="text"
-                  placeholder="Search for businesses (e.g., 'cafe', 'restaurant in dehradun')..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Search businesses..."
+                  className="flex-1 px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base md:text-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  className="px-4 py-2 md:px-6 md:py-3 bg-black text-white rounded-lg hover:bg-gray-700 transition text-sm md:text-base"
                 >
                   Search
                 </button>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2">
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-lg transition ${
+                  className={`px-3 py-1 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap text-sm md:text-base ${
                     searchMode === "api"
-                      ? "bg-blue-600 text-white"
+                      ? "bg-black text-white"
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
                   onClick={() => {
@@ -466,9 +466,9 @@ const LocalSearchPage = () => {
                 </button>
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-lg transition ${
+                  className={`px-3 py-1 md:px-4 md:py-2 rounded-lg transition whitespace-nowrap text-sm md:text-base ${
                     searchMode === "database"
-                      ? "bg-blue-600 text-white"
+                      ? "bg-black text-white"
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
                   onClick={() => {
@@ -483,7 +483,7 @@ const LocalSearchPage = () => {
                     }
                   }}
                 >
-                  Our Recommendations
+                  Recommendations
                 </button>
               </div>
             </form>

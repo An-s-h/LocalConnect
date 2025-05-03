@@ -116,10 +116,10 @@ const RecommendedBusinesses = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
+      <div className="h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="flex flex-col items-center space-y-4">
           <LoaderCircle className="animate-spin w-12 h-12 text-indigo-600" />
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg text-center">
             Loading recommended businesses...
           </p>
         </div>
@@ -129,7 +129,7 @@ const RecommendedBusinesses = () => {
 
   if (businesses.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto mt-16 text-center">
+      <div className="max-w-7xl mx-auto mt-16 text-center px-4">
         <div className="inline-flex flex-col items-center p-8 rounded-2xl bg-white border border-dashed border-gray-300">
           <Image className="w-16 h-16 text-gray-400 mb-4" />
           <h3 className="text-lg font-medium text-gray-700">
@@ -144,24 +144,24 @@ const RecommendedBusinesses = () => {
   }
 
   return (
-    <section className="bg-gray-50 py-12">
-      <div className="text-center mb-8">
-        <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+    <section className="bg-gray-50 py-8 md:py-12 px-4 sm:px-6">
+      <div className="text-center mb-8 max-w-4xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
           🌟 Recommended for You
         </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-gray-600 mx-auto text-sm sm:text-base">
           Based on your preferences, we think you'll love these businesses.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {businesses.map((business) => (
           <div
             key={business._id}
             className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-indigo-100 cursor-pointer flex flex-col"
           >
             {/* Image Section */}
-            <div className="relative h-48 overflow-hidden rounded-t-xl">
+            <div className="relative h-40 sm:h-48 overflow-hidden rounded-t-xl">
               {business.photos?.length > 0 ? (
                 <img
                   src={business.photos[0]}
@@ -181,48 +181,50 @@ const RecommendedBusinesses = () => {
             </div>
 
             {/* Business Content */}
-            <div className="p-5 space-y-4 flex-grow flex flex-col">
+            <div className="p-4 sm:p-5 space-y-3 sm:space-y-4 flex-grow flex flex-col">
               <div className="flex items-start justify-between">
                 <h2
-                  className="text-xl font-semibold text-gray-900 hover:text-indigo-600 transition-colors cursor-pointer"
+                  className="text-lg sm:text-xl font-semibold text-gray-900 hover:text-indigo-600 transition-colors cursor-pointer"
                   onClick={() => handleBusinessClick(business)}
                 >
                   {business.name}
                 </h2>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700">
+                <span className="text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-indigo-100 text-indigo-700">
                   {business.category}
                 </span>
               </div>
 
-              <div className="space-y-2.5 flex-grow">
+              <div className="space-y-2 flex-grow">
                 {/* Address */}
                 <div className="flex items-center text-gray-600">
-                  <MapPin className="w-4 h-4 mr-2 text-indigo-600" />
-                  <span className="text-sm">{business.location}</span>
+                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-indigo-600" />
+                  <span className="text-xs sm:text-sm">
+                    {business.location}
+                  </span>
                 </div>
 
                 {/* Hours */}
                 {business.hours && (
                   <div className="flex items-center text-gray-600">
-                    <Clock className="w-4 h-4 mr-2 text-indigo-600" />
-                    <span className="text-sm">{business.hours}</span>
+                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-indigo-600" />
+                    <span className="text-xs sm:text-sm">{business.hours}</span>
                   </div>
                 )}
 
                 {/* Payment Methods */}
                 {business.paymentMethods?.length > 0 && (
                   <div className="flex items-center text-gray-600">
-                    <CreditCard className="w-4 h-4 mr-2 text-indigo-600" />
-                    <span className="text-sm">
+                    <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-indigo-600" />
+                    <span className="text-xs sm:text-sm">
                       {business.paymentMethods.join(", ")}
                     </span>
                   </div>
                 )}
 
                 {/* Description */}
-                <div className="flex items-start text-sm text-gray-600">
-                  <Info className="h-4 w-4 mr-1 text-gray-500 mt-0.5" />
-                  <p className="line-clamp-2">
+                <div className="flex items-start text-gray-600">
+                  <Info className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 text-gray-500 mt-0.5" />
+                  <p className="text-xs sm:text-sm line-clamp-2">
                     {business.description || "No description available."}
                   </p>
                 </div>
@@ -231,8 +233,6 @@ const RecommendedBusinesses = () => {
                 {business.service_options &&
                   renderServiceIcons(business.service_options)}
               </div>
-
-              {/* Rating */}
             </div>
           </div>
         ))}

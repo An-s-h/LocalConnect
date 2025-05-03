@@ -102,7 +102,7 @@ const Hero = () => {
         variants={containerVariants}
       >
         <motion.h1 
-          className="text-3xl sm:text-5xl font-bold text-white drop-shadow-lg"
+          className="text-3xl mt-10 sm:text-5xl font-bold text-white drop-shadow-lg"
           variants={itemVariants}
         >
           Discover Local Treasures
