@@ -23,10 +23,10 @@ app.use(bodyParser.json());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
-
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { bufferCommands: false })
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
+
 
 // Enhanced image quality helper function
 const enhanceImageUrl = (url, size = 800) => {
