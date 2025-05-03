@@ -23,7 +23,7 @@ const LocalConnectReviewPage = () => {
         try {
           setLoading(true);
           const response = await axios.get(
-            `https://local-connect-pi.vercel.app/api/local-connect/businesses/${id}`
+            `https://local-connect-one.vercel.app/api/local-connect/businesses/${id}`
           );
           setBusinessData({
             title: response.data.name,

@@ -82,15 +82,18 @@ const SignUp = () => {
       );
       const { uid } = userCredential.user;
 
-      await axios.post("https://local-connect-pi.vercel.app/api/users/signup", {
-        firebaseID: uid,
-        username,
-        email,
-        password,
-        phoneNumber,
-        city,
-        preferences,
-      });
+      await axios.post(
+        "https://local-connect-one.vercel.app/api/users/signup",
+        {
+          firebaseID: uid,
+          username,
+          email,
+          password,
+          phoneNumber,
+          city,
+          preferences,
+        }
+      );
 
       setSuccess(true);
       setEmail("");

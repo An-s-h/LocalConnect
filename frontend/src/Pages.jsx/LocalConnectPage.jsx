@@ -32,7 +32,7 @@ const LocalConnectPage = () => {
 
       try {
         const response = await axios.get(
-          `https://local-connect-pi.vercel.app/api/local-connect/search`,
+          `https://local-connect-one.vercel.app/api/local-connect/search`,
           {
             params: { query: searchQuery },
           }
@@ -54,7 +54,7 @@ const LocalConnectPage = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://local-connect-pi.vercel.app/api/local-connect/businesses",
+        "https://local-connect-one.vercel.app/api/local-connect/businesses",
         newBusiness
       );
       setSearchResults((prev) => [...prev, response.data]);

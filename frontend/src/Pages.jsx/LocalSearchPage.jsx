@@ -123,7 +123,7 @@ const LocalSearchPage = () => {
     setRecsError(null);
     try {
       const response = await axios.get(
-        "https://local-connect-pi.vercel.app/api/businesses"
+        "https://local-connect-one.vercel.app/api/businesses"
       );
       setRecommendations(response.data);
       setFilteredRecommendations(response.data.filter((b) => b.isApproved));
@@ -156,7 +156,7 @@ const LocalSearchPage = () => {
 
       try {
         const response = await axios.get(
-          "https://local-connect-pi.vercel.app/api/local-search",
+          "https://local-connect-one.vercel.app/api/local-search",
           {
             params: { query, location: "India" },
           }

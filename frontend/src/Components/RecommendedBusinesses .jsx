@@ -27,7 +27,7 @@ const RecommendedBusinesses = () => {
       try {
         if (firebaseUser) {
           const response = await axios.post(
-            "https://local-connect-pi.vercel.app/api/businesses/recommendations",
+            "https://local-connect-one.vercel.app/api/businesses/recommendations",
             {
               firebaseID: firebaseUser.uid,
             }
@@ -35,7 +35,7 @@ const RecommendedBusinesses = () => {
           setBusinesses(response.data);
         } else {
           const response = await fetch(
-            "https://local-connect-pi.vercel.app/api/businesses/"
+            "https://local-connect-one.vercel.app/api/businesses/"
           );
           const data = await response.json();
           console.log(data);

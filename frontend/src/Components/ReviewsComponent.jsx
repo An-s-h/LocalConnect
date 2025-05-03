@@ -21,7 +21,7 @@ const ReviewsComponent = ({ businessName }) => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `https://local-connect-pi.vercel.app/api/localreviews/${encodeURIComponent(
+          `https://local-connect-one.vercel.app/api/localreviews/${encodeURIComponent(
             businessName
           )}`
         );
@@ -73,7 +73,7 @@ const ReviewsComponent = ({ businessName }) => {
 
     try {
       await axios.delete(
-        `https://local-connect-pi.vercel.app/api/localreviews/${id}`
+        `https://local-connect-one.vercel.app/api/localreviews/${id}`
       );
       setReviews(reviews.filter((review) => review._id !== id));
       calculateAverageRating(reviews.filter((review) => review._id !== id));
@@ -87,7 +87,7 @@ const ReviewsComponent = ({ businessName }) => {
       if (editingReview) {
         // Update existing review
         const response = await axios.patch(
-          `https://local-connect-pi.vercel.app/api/localreviews/${editingReview._id}`,
+          `https://local-connect-one.vercel.app/api/localreviews/${editingReview._id}`,
           {
             ...reviewData,
             userName: user.username, // Ensure username comes from context
@@ -101,7 +101,7 @@ const ReviewsComponent = ({ businessName }) => {
       } else {
         // Add new review
         const response = await axios.post(
-          "https://local-connect-pi.vercel.app/api/localreviews",
+          "https://local-connect-one.vercel.app/api/localreviews",
           {
             ...reviewData,
             businessName,

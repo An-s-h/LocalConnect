@@ -41,7 +41,7 @@ const SignIn = () => {
 
       // Check if the user exists in MongoDB
       const response = await axios.post(
-        "https://local-connect-pi.vercel.app/api/users/sign-in",
+        "https://local-connect-one.vercel.app/api/users/sign-in",
         {
           firebaseID: uid,
         }

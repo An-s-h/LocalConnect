@@ -113,7 +113,7 @@ const AddBusiness = () => {
 
     try {
       const response = await fetch(
-        "https://local-connect-pi.vercel.app/api/businesses",
+        "https://local-connect-one.vercel.app/api/businesses",
         {
           method: "POST",
           body: formDataToSend,

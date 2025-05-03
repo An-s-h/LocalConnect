@@ -33,7 +33,7 @@ function BusinessComponent() {
       setReviewsError(null);
       try {
         const response = await axios.get(
-          `https://local-connect-pi.vercel.app/api/business-reviews/${businessData.place_id}`
+          `https://local-connect-one.vercel.app/api/business-reviews/${businessData.place_id}`
         );
 
         if (response.data.error) {

@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
     try {
       setAdminCheckLoading(true);
       const response = await axios.post(
-        "https://local-connect-pi.vercel.app/api/users/check-admin",
+        "https://local-connect-one.vercel.app/api/users/check-admin",
         {
           firebaseID: uid,
         }
@@ -47,7 +47,7 @@ export const UserProvider = ({ children }) => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://local-connect-pi.vercel.app/api/users/sign-in",
+          "https://local-connect-one.vercel.app/api/users/sign-in",
           {
             firebaseID: firebaseUser.uid,
           }

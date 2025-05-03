@@ -19,7 +19,7 @@ const AdminPage = () => {
   const fetchBusinesses = async () => {
     try {
       const response = await fetch(
-        "https://local-connect-pi.vercel.app/api/businesses/admin"
+        "https://local-connect-one.vercel.app/api/businesses/admin"
       );
       const data = await response.json();
       setBusinesses(data);
@@ -32,7 +32,7 @@ const AdminPage = () => {
 
   const approveBusiness = async (id) => {
     await fetch(
-      `https://local-connect-pi.vercel.app/api/businesses/approve/${id}`,
+      `https://local-connect-one.vercel.app/api/businesses/approve/${id}`,
       {
         method: "PUT",
       }
@@ -41,7 +41,7 @@ const AdminPage = () => {
   };
 
   const deleteBusiness = async (id) => {
-    await fetch(`https://local-connect-pi.vercel.app/api/businesses/${id}`, {
+    await fetch(`https://local-connect-one.vercel.app/api/businesses/${id}`, {
       method: "DELETE",
     });
     fetchBusinesses();
