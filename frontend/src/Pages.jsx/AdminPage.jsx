@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { LoaderCircle, CheckCircle, XCircle, Trash2, Image ,MapPin } from "lucide-react";
+import {
+  LoaderCircle,
+  CheckCircle,
+  XCircle,
+  Trash2,
+  Image,
+  MapPin,
+} from "lucide-react";
 
 const AdminPage = () => {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     fetchBusinesses();
   }, []);
 
   const fetchBusinesses = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/businesses/admin");
+      const response = await fetch(
+        "https://local-connect-pi.vercel.app/api/businesses/admin"
+      );
       const data = await response.json();
       setBusinesses(data);
     } catch (error) {
@@ -22,14 +31,17 @@ const AdminPage = () => {
   };
 
   const approveBusiness = async (id) => {
-    await fetch(`http://localhost:8000/api/businesses/approve/${id}`, {
-      method: "PUT",
-    });
+    await fetch(
+      `https://local-connect-pi.vercel.app/api/businesses/approve/${id}`,
+      {
+        method: "PUT",
+      }
+    );
     fetchBusinesses();
   };
 
   const deleteBusiness = async (id) => {
-    await fetch(`http://localhost:8000/api/businesses/${id}`, {
+    await fetch(`https://local-connect-pi.vercel.app/api/businesses/${id}`, {
       method: "DELETE",
     });
     fetchBusinesses();
@@ -93,15 +105,19 @@ const AdminPage = () => {
                   <MapPin className="w-4 h-4 mr-2 text-indigo-600" />
                   <span className="text-sm">{business.location}</span>
                 </div>
-                
+
                 <div className="flex items-center">
-                  <span className={`inline-block w-2.5 h-2.5 rounded-full mr-2 ${
-                    business.isApproved ? 'bg-green-500' : 'bg-yellow-500'
-                  }`} />
-                  <span className={`text-sm font-medium ${
-                    business.isApproved ? 'text-green-600' : 'text-yellow-600'
-                  }`}>
-                    {business.isApproved ? 'Verified' : 'Pending Review'}
+                  <span
+                    className={`inline-block w-2.5 h-2.5 rounded-full mr-2 ${
+                      business.isApproved ? "bg-green-500" : "bg-yellow-500"
+                    }`}
+                  />
+                  <span
+                    className={`text-sm font-medium ${
+                      business.isApproved ? "text-green-600" : "text-yellow-600"
+                    }`}
+                  >
+                    {business.isApproved ? "Verified" : "Pending Review"}
                   </span>
                 </div>
               </div>
@@ -165,6 +181,5 @@ const AdminPage = () => {
     </div>
   );
 };
-
 
 export default AdminPage;

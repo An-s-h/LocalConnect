@@ -60,70 +60,78 @@ const LocalSearchPage = () => {
       .trim();
   }, []);
 
-  const filterRecommendations = useCallback((query) => {
-    if (!recommendations.length) return;
+  const filterRecommendations = useCallback(
+    (query) => {
+      if (!recommendations.length) return;
 
-    const normalizedQuery = normalizeString(query);
-    if (!normalizedQuery.trim()) {
-      setFilteredRecommendations(recommendations.filter(b => b.isApproved));
-      return;
-    }
-
-    const queryParts = normalizedQuery.split(' in ');
-    let searchTerm, locationTerm;
-
-    if (queryParts.length > 1) {
-      searchTerm = queryParts[0].trim();
-      locationTerm = queryParts[1].trim();
-    } else {
-      const words = normalizedQuery.split(' ');
-      if (words.length > 1) {
-        searchTerm = words.slice(0, -1).join(' ').trim();
-        locationTerm = words[words.length - 1].trim();
-      } else {
-        searchTerm = normalizedQuery.trim();
-        locationTerm = '';
+      const normalizedQuery = normalizeString(query);
+      if (!normalizedQuery.trim()) {
+        setFilteredRecommendations(recommendations.filter((b) => b.isApproved));
+        return;
       }
-    }
 
-    const filtered = recommendations.filter((business) => {
-      if (!business.isApproved) return false;
+      const queryParts = normalizedQuery.split(" in ");
+      let searchTerm, locationTerm;
 
-      const normalizedFields = {
-        name: normalizeString(business.name),
-        category: normalizeString(business.category),
-        location: normalizeString(business.location),
-        description: normalizeString(business.description)
-      };
+      if (queryParts.length > 1) {
+        searchTerm = queryParts[0].trim();
+        locationTerm = queryParts[1].trim();
+      } else {
+        const words = normalizedQuery.split(" ");
+        if (words.length > 1) {
+          searchTerm = words.slice(0, -1).join(" ").trim();
+          locationTerm = words[words.length - 1].trim();
+        } else {
+          searchTerm = normalizedQuery.trim();
+          locationTerm = "";
+        }
+      }
 
-      const fullQueryMatch =
-        normalizedFields.name.includes(normalizedQuery) ||
-        normalizedFields.category.includes(normalizedQuery) ||
-        normalizedFields.location.includes(normalizedQuery) ||
-        normalizedFields.description.includes(normalizedQuery);
+      const filtered = recommendations.filter((business) => {
+        if (!business.isApproved) return false;
 
-      const splitQueryMatch =
-        (normalizedFields.name.includes(searchTerm) ||
-          normalizedFields.category.includes(searchTerm) ||
-          normalizedFields.description.includes(searchTerm)) &&
-        (locationTerm === '' || normalizedFields.location.includes(locationTerm));
+        const normalizedFields = {
+          name: normalizeString(business.name),
+          category: normalizeString(business.category),
+          location: normalizeString(business.location),
+          description: normalizeString(business.description),
+        };
 
-      return fullQueryMatch || splitQueryMatch;
-    });
+        const fullQueryMatch =
+          normalizedFields.name.includes(normalizedQuery) ||
+          normalizedFields.category.includes(normalizedQuery) ||
+          normalizedFields.location.includes(normalizedQuery) ||
+          normalizedFields.description.includes(normalizedQuery);
 
-    setFilteredRecommendations(filtered);
-  }, [recommendations, normalizeString]);
+        const splitQueryMatch =
+          (normalizedFields.name.includes(searchTerm) ||
+            normalizedFields.category.includes(searchTerm) ||
+            normalizedFields.description.includes(searchTerm)) &&
+          (locationTerm === "" ||
+            normalizedFields.location.includes(locationTerm));
+
+        return fullQueryMatch || splitQueryMatch;
+      });
+
+      setFilteredRecommendations(filtered);
+    },
+    [recommendations, normalizeString]
+  );
 
   const fetchRecommendations = useCallback(async () => {
     setLoadingRecs(true);
     setRecsError(null);
     try {
-      const response = await axios.get("http://localhost:8000/api/businesses");
+      const response = await axios.get(
+        "https://local-connect-pi.vercel.app/api/businesses"
+      );
       setRecommendations(response.data);
-      setFilteredRecommendations(response.data.filter(b => b.isApproved));
+      setFilteredRecommendations(response.data.filter((b) => b.isApproved));
     } catch (err) {
       console.error("Error fetching recommendations:", err);
-      setRecsError(err.response?.data?.message || "Failed to fetch recommendations");
+      setRecsError(
+        err.response?.data?.message || "Failed to fetch recommendations"
+      );
       setRecommendations([]);
       setFilteredRecommendations([]);
     } finally {
@@ -131,103 +139,148 @@ const LocalSearchPage = () => {
     }
   }, []);
 
-  const fetchResults = useCallback(async (query) => {
-    if (!query?.trim()) {
-      setError("Please enter a search query");
-      return;
-    }
+  const fetchResults = useCallback(
+    async (query) => {
+      if (!query?.trim()) {
+        setError("Please enter a search query");
+        return;
+      }
 
-    if (cache[query]) {
-      setSearchData(cache[query]);
-      return;
-    }
+      if (cache[query]) {
+        setSearchData(cache[query]);
+        return;
+      }
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await axios.get("http://localhost:8000/api/local-search", {
-        params: { query, location: "India" },
-      });
+      try {
+        const response = await axios.get(
+          "https://local-connect-pi.vercel.app/api/local-search",
+          {
+            params: { query, location: "India" },
+          }
+        );
 
-      const transformedData = {
-        ...response.data,
-        local_results: response.data.local_results?.map(business => ({
-          ...business,
-          name: business.title || business.name || "Unknown Business",
-          location: business.address || "Location not available",
-          phoneNumber: business.phone || "Phone not available",
-          rating: business.rating || 0,
-          reviews: business.reviews || 0,
-          paymentMethods: business.payment_methods || ["Cash", "Card", "UPI"],
-          photos: business.photos || [],
-          coordinates: business.coordinates || null,
-          isApproved: true
-        })) || []
+        const transformedData = {
+          ...response.data,
+          local_results:
+            response.data.local_results?.map((business) => ({
+              ...business,
+              name: business.title || business.name || "Unknown Business",
+              location: business.address || "Location not available",
+              phoneNumber: business.phone || "Phone not available",
+              rating: business.rating || 0,
+              reviews: business.reviews || 0,
+              paymentMethods: business.payment_methods || [
+                "Cash",
+                "Card",
+                "UPI",
+              ],
+              photos: business.photos || [],
+              coordinates: business.coordinates || null,
+              isApproved: true,
+            })) || [],
+        };
+
+        setSearchData(transformedData);
+        setCache((prev) => ({ ...prev, [query]: transformedData }));
+      } catch (err) {
+        console.error("Error fetching results:", err);
+        setError(err.response?.data?.error || "Failed to fetch results");
+        setSearchData(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cache]
+  );
+
+  const handleSearch = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (searchQuery.trim()) {
+        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+        setHasSearched(true);
+        if (searchMode === "api") {
+          fetchResults(searchQuery);
+        } else {
+          filterRecommendations(searchQuery);
+        }
+      } else {
+        if (searchMode === "database") {
+          setFilteredRecommendations(
+            recommendations.filter((b) => b.isApproved)
+          );
+        }
+      }
+    },
+    [
+      searchQuery,
+      searchMode,
+      navigate,
+      fetchResults,
+      filterRecommendations,
+      recommendations,
+    ]
+  );
+
+  const handleBusinessClick = useCallback(
+    (business) => {
+      const businessData = {
+        title: business.title || business.name || "Unknown Business",
+        type: business.category || "Business",
+        address:
+          business.location || business.address || "Address not available",
+        phone: business.phoneNumber || business.phone || "Phone not available",
+        rating: business.rating || 0,
+        reviews: business.reviews || 0,
+        thumbnail:
+          business.photos?.[0] ||
+          business.thumbnail ||
+          "https://dummyimage.com/800x400/cccccc/000000&text=Business+Image",
+        hours: business.hours || "Hours not available",
+        description:
+          business.description ||
+          `${business.title || business.name} - ${
+            business.category || "Business"
+          }`,
+        payment_methods: business.paymentMethods || ["Cash", "Card", "UPI"],
+        amenities: business.amenities || [],
+        specialties: business.specialties || [],
+        service_options: business.service_options || {},
+        place_id:
+          business._id ||
+          business.place_id ||
+          Math.random().toString(36).substring(7),
+        photos: business.photos || [],
+        coordinates: business.coordinates || null,
       };
 
-      setSearchData(transformedData);
-      setCache(prev => ({ ...prev, [query]: transformedData }));
-    } catch (err) {
-      console.error("Error fetching results:", err);
-      setError(err.response?.data?.error || "Failed to fetch results");
-      setSearchData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [cache]);
-
-  const handleSearch = useCallback((e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-      setHasSearched(true);
-      if (searchMode === "api") {
-        fetchResults(searchQuery);
-      } else {
-        filterRecommendations(searchQuery);
-      }
-    } else {
-      if (searchMode === "database") {
-        setFilteredRecommendations(recommendations.filter(b => b.isApproved));
-      }
-    }
-  }, [searchQuery, searchMode, navigate, fetchResults, filterRecommendations, recommendations]);
-
-  const handleBusinessClick = useCallback((business) => {
-    const businessData = {
-      title: business.title || business.name || "Unknown Business",
-      type: business.category || "Business",
-      address: business.location || business.address || "Address not available",
-      phone: business.phoneNumber || business.phone || "Phone not available",
-      rating: business.rating || 0,
-      reviews: business.reviews || 0,
-      thumbnail: business.photos?.[0] || business.thumbnail || "https://dummyimage.com/800x400/cccccc/000000&text=Business+Image",
-      hours: business.hours || "Hours not available",
-      description: business.description || `${business.title || business.name} - ${business.category || "Business"}`,
-      payment_methods: business.paymentMethods || ["Cash", "Card", "UPI"],
-      amenities: business.amenities || [],
-      specialties: business.specialties || [],
-      service_options: business.service_options || {},
-      place_id: business._id || business.place_id || Math.random().toString(36).substring(7),
-      photos: business.photos || [],
-      coordinates: business.coordinates || null
-    };
-
-    navigate(`/business/${business._id || business.place_id || encodeURIComponent(business.title || "unknown")}`, {
-      state: { businessData },
-    });
-  }, [navigate]);
+      navigate(
+        `/business/${
+          business._id ||
+          business.place_id ||
+          encodeURIComponent(business.title || "unknown")
+        }`,
+        {
+          state: { businessData },
+        }
+      );
+    },
+    [navigate]
+  );
 
   const BusinessCard = React.memo(({ business, onClick }) => {
     const getImageUrl = useCallback((photo) => {
-      if (!photo) return "https://dummyimage.com/300x200/cccccc/000000&text=No+Image";
+      if (!photo)
+        return "https://dummyimage.com/300x200/cccccc/000000&text=No+Image";
 
-      if (photo.startsWith('/uploads/')) {
+      if (photo.startsWith("/uploads/")) {
         return `http://localhost:8000${photo}`;
       }
 
-      if (photo.startsWith('http')) {
+      if (photo.startsWith("http")) {
         return photo;
       }
 
@@ -241,7 +294,7 @@ const LocalSearchPage = () => {
 
     const formatRating = useCallback((rating, reviews) => {
       if (!rating || isNaN(rating)) return "N/A";
-      return `⭐ ${rating.toFixed(1)}${reviews ? ` (${reviews} reviews)` : ''}`;
+      return `⭐ ${rating.toFixed(1)}${reviews ? ` (${reviews} reviews)` : ""}`;
     }, []);
 
     const formatPhoneNumber = useCallback((phone) => {
@@ -249,7 +302,8 @@ const LocalSearchPage = () => {
       return `📞 ${phone}`;
     }, []);
 
-    const fallbackImage = "https://dummyimage.com/300x200/cccccc/000000&text=No+Image";
+    const fallbackImage =
+      "https://dummyimage.com/300x200/cccccc/000000&text=No+Image";
 
     return (
       <div
@@ -271,13 +325,21 @@ const LocalSearchPage = () => {
           />
         </div>
         <div className="flex-grow">
-          <h3 className="text-lg font-bold line-clamp-2">{business.name || "Unknown Business"}</h3>
-          <p className="text-sm text-gray-500 line-clamp-1">{business.location || "Location not available"}</p>
+          <h3 className="text-lg font-bold line-clamp-2">
+            {business.name || "Unknown Business"}
+          </h3>
+          <p className="text-sm text-gray-500 line-clamp-1">
+            {business.location || "Location not available"}
+          </p>
           <div className="mt-2 text-yellow-600 font-semibold">
             {formatRating(business.rating, business.reviews)}
           </div>
-          <p className="text-sm mt-2">{formatPhoneNumber(business.phoneNumber || business.phone)}</p>
-          <p className="text-sm text-blue-600 mt-1">💳 {formatPaymentMethods(business.paymentMethods)}</p>
+          <p className="text-sm mt-2">
+            {formatPhoneNumber(business.phoneNumber || business.phone)}
+          </p>
+          <p className="text-sm text-blue-600 mt-1">
+            💳 {formatPaymentMethods(business.paymentMethods)}
+          </p>
         </div>
       </div>
     );
@@ -334,7 +396,10 @@ const LocalSearchPage = () => {
               {filteredRecommendations.length !== 1 ? "s" : ""}
               {searchQuery.trim() !== "" && ` for "${searchQuery}"`}
             </p>
-            <SearchResults results={filteredRecommendations} onBusinessClick={handleBusinessClick} />
+            <SearchResults
+              results={filteredRecommendations}
+              onBusinessClick={handleBusinessClick}
+            />
           </>
         )}
       </>
@@ -412,7 +477,9 @@ const LocalSearchPage = () => {
                       setHasSearched(true);
                       filterRecommendations(searchQuery);
                     } else {
-                      setFilteredRecommendations(recommendations.filter(b => b.isApproved));
+                      setFilteredRecommendations(
+                        recommendations.filter((b) => b.isApproved)
+                      );
                     }
                   }}
                 >
@@ -439,7 +506,10 @@ const LocalSearchPage = () => {
                   <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-6">
                     {searchData.local_results.length} Search Results
                   </h2>
-                  <SearchResults results={searchData.local_results} onBusinessClick={handleBusinessClick} />
+                  <SearchResults
+                    results={searchData.local_results}
+                    onBusinessClick={handleBusinessClick}
+                  />
                 </>
               ) : (
                 !loading &&

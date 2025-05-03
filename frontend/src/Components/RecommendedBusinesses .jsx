@@ -1,20 +1,20 @@
-import { useUser } from '../Contexts/UserContext';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { 
-  Star, 
-  MapPin, 
-  LoaderCircle, 
-  Image, 
+import { useUser } from "../Contexts/UserContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Star,
+  MapPin,
+  LoaderCircle,
+  Image,
   Info,
   Clock,
   CreditCard,
   Wifi,
   ParkingCircle,
   Utensils,
-  ShoppingBag
+  ShoppingBag,
 } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const RecommendedBusinesses = () => {
   const { firebaseUser } = useUser();
@@ -26,22 +26,28 @@ const RecommendedBusinesses = () => {
     const fetchBusinesses = async () => {
       try {
         if (firebaseUser) {
-          const response = await axios.post('http://localhost:8000/api/businesses/recommendations', {
-            firebaseID: firebaseUser.uid,
-          });
+          const response = await axios.post(
+            "https://local-connect-pi.vercel.app/api/businesses/recommendations",
+            {
+              firebaseID: firebaseUser.uid,
+            }
+          );
           setBusinesses(response.data);
         } else {
-          const response = await fetch('http://localhost:8000/api/businesses/');
+          const response = await fetch(
+            "https://local-connect-pi.vercel.app/api/businesses/"
+          );
           const data = await response.json();
+          console.log(data);
           setBusinesses(data.slice(0, 4));
         }
       } catch (error) {
-        console.error('Error fetching businesses:', error);
+        console.error("Error fetching businesses:", error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchBusinesses();
   }, [firebaseUser]);
 
@@ -53,26 +59,35 @@ const RecommendedBusinesses = () => {
       phone: business.phoneNumber || "Phone not available",
       rating: business.rating || 0,
       reviews: business.reviews || 0,
-      thumbnail: business.photos?.[0] || "https://dummyimage.com/800x400/cccccc/000000&text=Business+Image",
+      thumbnail:
+        business.photos?.[0] ||
+        "https://dummyimage.com/800x400/cccccc/000000&text=Business+Image",
       hours: business.hours || "Hours not available",
-      description: business.description || `${business.name} - ${business.category || "Business"}`,
+      description:
+        business.description ||
+        `${business.name} - ${business.category || "Business"}`,
       payment_methods: business.paymentMethods || ["Cash", "Card", "UPI"],
       amenities: business.amenities || [],
       specialties: business.specialties || [],
       service_options: business.service_options || {},
       place_id: business._id || Math.random().toString(36).substring(7),
       photos: business.photos || [],
-      coordinates: business.coordinates || null
+      coordinates: business.coordinates || null,
     };
 
-    navigate(`/business/${business._id || encodeURIComponent(business.name || "unknown")}`, {
-      state: { businessData },
-    });
+    navigate(
+      `/business/${
+        business._id || encodeURIComponent(business.name || "unknown")
+      }`,
+      {
+        state: { businessData },
+      }
+    );
   };
 
   const renderServiceIcons = (serviceOptions) => {
     if (!serviceOptions) return null;
-    
+
     return (
       <div className="flex flex-wrap gap-2 mt-1">
         {serviceOptions.delivery && (
@@ -104,7 +119,9 @@ const RecommendedBusinesses = () => {
       <div className="h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center space-y-4">
           <LoaderCircle className="animate-spin w-12 h-12 text-indigo-600" />
-          <p className="text-gray-600 text-lg">Loading recommended businesses...</p>
+          <p className="text-gray-600 text-lg">
+            Loading recommended businesses...
+          </p>
         </div>
       </div>
     );
@@ -153,7 +170,7 @@ const RecommendedBusinesses = () => {
                   onClick={() => handleBusinessClick(business)}
                 />
               ) : (
-                <div 
+                <div
                   className="w-full h-full flex items-center justify-center bg-gray-50"
                   onClick={() => handleBusinessClick(business)}
                 >
@@ -162,11 +179,11 @@ const RecommendedBusinesses = () => {
               )}
               <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/90 via-white/40" />
             </div>
-  
+
             {/* Business Content */}
             <div className="p-5 space-y-4 flex-grow flex flex-col">
               <div className="flex items-start justify-between">
-                <h2 
+                <h2
                   className="text-xl font-semibold text-gray-900 hover:text-indigo-600 transition-colors cursor-pointer"
                   onClick={() => handleBusinessClick(business)}
                 >
@@ -176,14 +193,14 @@ const RecommendedBusinesses = () => {
                   {business.category}
                 </span>
               </div>
-  
+
               <div className="space-y-2.5 flex-grow">
                 {/* Address */}
                 <div className="flex items-center text-gray-600">
                   <MapPin className="w-4 h-4 mr-2 text-indigo-600" />
                   <span className="text-sm">{business.location}</span>
                 </div>
-  
+
                 {/* Hours */}
                 {business.hours && (
                   <div className="flex items-center text-gray-600">
@@ -191,32 +208,31 @@ const RecommendedBusinesses = () => {
                     <span className="text-sm">{business.hours}</span>
                   </div>
                 )}
-  
+
                 {/* Payment Methods */}
                 {business.paymentMethods?.length > 0 && (
                   <div className="flex items-center text-gray-600">
                     <CreditCard className="w-4 h-4 mr-2 text-indigo-600" />
                     <span className="text-sm">
-                      {business.paymentMethods.join(', ')}
+                      {business.paymentMethods.join(", ")}
                     </span>
                   </div>
                 )}
-  
-  {/* Description */}
+
+                {/* Description */}
                 <div className="flex items-start text-sm text-gray-600">
                   <Info className="h-4 w-4 mr-1 text-gray-500 mt-0.5" />
                   <p className="line-clamp-2">
                     {business.description || "No description available."}
                   </p>
                 </div>
-  
-           
+
                 {/* Service Options */}
-                {business.service_options && renderServiceIcons(business.service_options)}
+                {business.service_options &&
+                  renderServiceIcons(business.service_options)}
               </div>
-  
+
               {/* Rating */}
-             
             </div>
           </div>
         ))}

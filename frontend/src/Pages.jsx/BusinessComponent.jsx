@@ -28,20 +28,24 @@ function BusinessComponent() {
   useEffect(() => {
     const fetchReviews = async () => {
       if (!businessData?.place_id) return;
-      
+
       setLoadingReviews(true);
       setReviewsError(null);
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/business-reviews/${businessData.place_id}`
+          `https://local-connect-pi.vercel.app/api/business-reviews/${businessData.place_id}`
         );
-        
+
         if (response.data.error) {
           throw new Error(response.data.error);
         }
-        
-        setAverageRating(response.data.average_rating || businessData.rating || 0);
-        setTotalReviews(response.data.total_reviews || businessData.reviews || 0);
+
+        setAverageRating(
+          response.data.average_rating || businessData.rating || 0
+        );
+        setTotalReviews(
+          response.data.total_reviews || businessData.reviews || 0
+        );
       } catch (error) {
         console.error("Error fetching reviews:", error);
         setReviewsError(error.message || "Failed to load reviews");
@@ -55,8 +59,12 @@ function BusinessComponent() {
   if (!businessData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center p-6">
-        <h1 className="text-2xl font-bold mb-4">Business Information Not Available</h1>
-        <p className="mb-6 text-gray-600">Please select a business from the search results.</p>
+        <h1 className="text-2xl font-bold mb-4">
+          Business Information Not Available
+        </h1>
+        <p className="mb-6 text-gray-600">
+          Please select a business from the search results.
+        </p>
         <button
           onClick={() => navigate("/search")}
           className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
@@ -70,29 +78,45 @@ function BusinessComponent() {
   const amenities = businessData.service_options
     ? Object.entries(businessData.service_options)
         .filter(([_, value]) => value)
-        .map(([key]) => key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()))
+        .map(([key]) =>
+          key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+        )
     : ["Standard Amenities"];
 
-  const paymentMethods = businessData.payment_methods || ["Cash", "Card", "UPI"];
+  const paymentMethods = businessData.payment_methods || [
+    "Cash",
+    "Card",
+    "UPI",
+  ];
 
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
-    
+
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`full-${i}`} className="h-5 w-5 text-yellow-400 fill-current" />);
+      stars.push(
+        <Star
+          key={`full-${i}`}
+          className="h-5 w-5 text-yellow-400 fill-current"
+        />
+      );
     }
-    
+
     if (hasHalfStar) {
-      stars.push(<Star key="half" className="h-5 w-5 text-yellow-400 fill-current opacity-50" />);
+      stars.push(
+        <Star
+          key="half"
+          className="h-5 w-5 text-yellow-400 fill-current opacity-50"
+        />
+      );
     }
-    
+
     const emptyStars = 5 - stars.length;
     for (let i = 0; i < emptyStars; i++) {
       stars.push(<Star key={`empty-${i}`} className="h-5 w-5 text-gray-300" />);
     }
-    
+
     return <div className="flex">{stars}</div>;
   };
 
@@ -120,7 +144,9 @@ function BusinessComponent() {
               <h1 className="text-5xl font-bold text-white mb-4">
                 {businessData.title}
               </h1>
-              <p className="text-xl text-white/90">{businessData.description}</p>
+              <p className="text-xl text-white/90">
+                {businessData.description}
+              </p>
             </div>
           </div>
         </div>
@@ -143,7 +169,9 @@ function BusinessComponent() {
                 <div className="flex items-start gap-4">
                   <Clock className="h-6 w-6 text-gray-700 mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Hours</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Hours
+                    </h3>
                     <p className="text-gray-600">{businessData.hours}</p>
                     <span className="inline-block mt-2 px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                       Open Now
@@ -154,10 +182,14 @@ function BusinessComponent() {
                 <div className="flex items-start gap-4">
                   <MapPin className="h-6 w-6 text-gray-700 mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Location</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Location
+                    </h3>
                     <p className="text-gray-600">{businessData.address}</p>
                     <a
-                      href={`https://www.google.com/maps?q=${encodeURIComponent(businessData.address)}`}
+                      href={`https://www.google.com/maps?q=${encodeURIComponent(
+                        businessData.address
+                      )}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center mt-2 text-gray-700 hover:text-gray-900 transition-colors"
@@ -176,7 +208,9 @@ function BusinessComponent() {
                 <div className="flex items-center gap-4 mb-4">
                   <Phone className="h-8 w-8 text-gray-700" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Contact
+                    </h3>
                     <p className="text-2xl font-medium text-gray-900">
                       {businessData.phone}
                     </p>
@@ -196,7 +230,9 @@ function BusinessComponent() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">We Offer</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  We Offer
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {amenities.map((item, index) => (
                     <span
@@ -218,7 +254,10 @@ function BusinessComponent() {
             <h3 className="text-xl font-semibold mb-4">Facilities</h3>
             <ul className="space-y-3">
               {amenities.map((item, index) => (
-                <li key={index} className="flex items-center gap-3 text-gray-600">
+                <li
+                  key={index}
+                  className="flex items-center gap-3 text-gray-600"
+                >
                   <CheckCircle className="h-5 w-5 text-gray-700" />
                   {item}
                 </li>
@@ -256,7 +295,9 @@ function BusinessComponent() {
 
         {/* Map Section */}
         <section id="map" className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Our Location</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            Our Location
+          </h2>
           <div className="rounded-2xl overflow-hidden shadow-xl">
             <iframe
               src={`https://www.google.com/maps?q=${encodeURIComponent(
@@ -288,38 +329,56 @@ function BusinessComponent() {
               </div>
             )}
           </div>
-          
+
           {loadingReviews && (
             <div className="text-center py-8">
               <div className="inline-flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 <span>Loading rating information...</span>
               </div>
             </div>
           )}
-          
-      
-          
-      
         </section>
 
         {/* Photo Gallery */}
         {businessData.photos && businessData.photos.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Photo Gallery</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+              Photo Gallery
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {businessData.photos.slice(0, 8).map((photo, index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg">
+                <div
+                  key={index}
+                  className="aspect-square overflow-hidden rounded-lg"
+                >
                   <img
                     src={photo}
                     alt={`${businessData.title} - Photo ${index + 1}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/300x300.png?text=Photo+Not+Available";
+                      e.target.src =
+                        "https://via.placeholder.com/300x300.png?text=Photo+Not+Available";
                     }}
                   />
                 </div>
@@ -327,11 +386,10 @@ function BusinessComponent() {
             </div>
           </section>
         )}
-        
-       <section className="mb-12">
-       <ReviewsComponent businessName={businessData.title} />
-       </section>
-       
+
+        <section className="mb-12">
+          <ReviewsComponent businessName={businessData.title} />
+        </section>
       </div>
 
       <Footer />

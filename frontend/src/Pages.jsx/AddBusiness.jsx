@@ -1,9 +1,26 @@
 import React, { useState } from "react";
-import { 
-  Building, CheckCircle, Users, ShieldCheck, Star, 
-  MapPin, Phone, Mail, MessageSquare, Image, Link, 
-  Clock, CreditCard, Calendar, Wifi, ParkingCircle,
-  Coffee, Utensils, ShoppingBag, Scissors, Home
+import {
+  Building,
+  CheckCircle,
+  Users,
+  ShieldCheck,
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  MessageSquare,
+  Image,
+  Link,
+  Clock,
+  CreditCard,
+  Calendar,
+  Wifi,
+  ParkingCircle,
+  Coffee,
+  Utensils,
+  ShoppingBag,
+  Scissors,
+  Home,
 } from "lucide-react";
 import NavBar from "../Components/NavBar";
 
@@ -28,8 +45,8 @@ const AddBusiness = () => {
       outdoor_seating: false,
       wheelchair_accessible: false,
       free_wifi: false,
-      parking: false
-    }
+      parking: false,
+    },
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -41,58 +58,67 @@ const AddBusiness = () => {
     } else if (e.target.name === "paymentMethods") {
       const value = e.target.value;
       let updatedMethods = [...formData.paymentMethods];
-      
+
       if (e.target.checked) {
         updatedMethods.push(value);
       } else {
-        updatedMethods = updatedMethods.filter(method => method !== value);
+        updatedMethods = updatedMethods.filter((method) => method !== value);
       }
-      
+
       setFormData({ ...formData, paymentMethods: updatedMethods });
     } else if (e.target.name in formData.serviceOptions) {
       setFormData({
         ...formData,
         serviceOptions: {
           ...formData.serviceOptions,
-          [e.target.name]: e.target.checked
-        }
+          [e.target.name]: e.target.checked,
+        },
       });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     const formDataToSend = new FormData();
-    
+
     // Basic information
-    formDataToSend.append('businessName', formData.businessName);
-    formDataToSend.append('category', formData.category);
-    formDataToSend.append('location', formData.location);
-    formDataToSend.append('contact', formData.contact);
-    formDataToSend.append('email', formData.email);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('googleMapLink', formData.googleMapLink);
-    formDataToSend.append('hours', formData.hours);
-    formDataToSend.append('specialties', formData.specialties);
-    
+    formDataToSend.append("businessName", formData.businessName);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("location", formData.location);
+    formDataToSend.append("contact", formData.contact);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("googleMapLink", formData.googleMapLink);
+    formDataToSend.append("hours", formData.hours);
+    formDataToSend.append("specialties", formData.specialties);
+
     // Arrays and objects
-    formDataToSend.append('paymentMethods', JSON.stringify(formData.paymentMethods));
-    formDataToSend.append('serviceOptions', JSON.stringify(formData.serviceOptions));
-    
+    formDataToSend.append(
+      "paymentMethods",
+      JSON.stringify(formData.paymentMethods)
+    );
+    formDataToSend.append(
+      "serviceOptions",
+      JSON.stringify(formData.serviceOptions)
+    );
+
     // Photos
     formData.photos.forEach((photo) => {
-      formDataToSend.append('photos', photo);
+      formDataToSend.append("photos", photo);
     });
-  
+
     try {
-      const response = await fetch('http://localhost:8000/api/businesses', {
-        method: 'POST',
-        body: formDataToSend,
-      });
+      const response = await fetch(
+        "https://local-connect-pi.vercel.app/api/businesses",
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
       setSuccess(true);
     } catch (error) {
       setSuccess(false);
@@ -139,9 +165,8 @@ const AddBusiness = () => {
     "Furniture",
     "Jewelry & Accessories",
     "Sports & Fitness",
-    "Grocery Stores"
+    "Grocery Stores",
   ];
-  
 
   return (
     <div className="bg-white min-h-screen">
@@ -158,8 +183,9 @@ const AddBusiness = () => {
             Add Your Business
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Join our platform to connect with local customers and grow your business.
-            Fill out the form below, and we'll verify your listing before approval.
+            Join our platform to connect with local customers and grow your
+            business. Fill out the form below, and we'll verify your listing
+            before approval.
           </p>
         </div>
 
@@ -192,7 +218,9 @@ const AddBusiness = () => {
               >
                 <option value="">Select Business Category</option>
                 {businessCategories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
                 ))}
               </select>
             </div>
@@ -286,22 +314,27 @@ const AddBusiness = () => {
                 Payment Methods Accepted
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {["Cash", "Card", "UPI", "Credit", "Debit", "Net Banking"].map((method) => (
-                  <div key={method} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`payment-${method}`}
-                      name="paymentMethods"
-                      value={method}
-                      checked={formData.paymentMethods.includes(method)}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor={`payment-${method}`} className="ml-2 block text-sm text-gray-700">
-                      {method}
-                    </label>
-                  </div>
-                ))}
+                {["Cash", "Card", "UPI", "Credit", "Debit", "Net Banking"].map(
+                  (method) => (
+                    <div key={method} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`payment-${method}`}
+                        name="paymentMethods"
+                        value={method}
+                        checked={formData.paymentMethods.includes(method)}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`payment-${method}`}
+                        className="ml-2 block text-sm text-gray-700"
+                      >
+                        {method}
+                      </label>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
@@ -312,13 +345,41 @@ const AddBusiness = () => {
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { name: "delivery", label: "Delivery", icon: <ShoppingBag className="w-4 h-4 mr-1" /> },
-                  { name: "takeaway", label: "Takeaway", icon: <Coffee className="w-4 h-4 mr-1" /> },
-                  { name: "dine_in", label: "Dine-in", icon: <Utensils className="w-4 h-4 mr-1" /> },
-                  { name: "outdoor_seating", label: "Outdoor Seating", icon: <Home className="w-4 h-4 mr-1" /> },
-                  { name: "wheelchair_accessible", label: "Wheelchair Access", icon: <ParkingCircle className="w-4 h-4 mr-1" /> },
-                  { name: "free_wifi", label: "Free WiFi", icon: <Wifi className="w-4 h-4 mr-1" /> },
-                  { name: "parking", label: "Parking Available", icon: <ParkingCircle className="w-4 h-4 mr-1" /> }
+                  {
+                    name: "delivery",
+                    label: "Delivery",
+                    icon: <ShoppingBag className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "takeaway",
+                    label: "Takeaway",
+                    icon: <Coffee className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "dine_in",
+                    label: "Dine-in",
+                    icon: <Utensils className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "outdoor_seating",
+                    label: "Outdoor Seating",
+                    icon: <Home className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "wheelchair_accessible",
+                    label: "Wheelchair Access",
+                    icon: <ParkingCircle className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "free_wifi",
+                    label: "Free WiFi",
+                    icon: <Wifi className="w-4 h-4 mr-1" />,
+                  },
+                  {
+                    name: "parking",
+                    label: "Parking Available",
+                    icon: <ParkingCircle className="w-4 h-4 mr-1" />,
+                  },
                 ].map((option) => (
                   <div key={option.name} className="flex items-center">
                     <input
@@ -329,7 +390,10 @@ const AddBusiness = () => {
                       onChange={handleChange}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     />
-                    <label htmlFor={`service-${option.name}`} className="ml-2 block text-sm text-gray-700 flex items-center">
+                    <label
+                      htmlFor={`service-${option.name}`}
+                      className="ml-2 block text-sm text-gray-700 flex items-center"
+                    >
                       {option.icon}
                       {option.label}
                     </label>
@@ -350,7 +414,8 @@ const AddBusiness = () => {
                 className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 text-gray-900 rounded-lg outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Upload high-quality photos of your business (minimum 3 photos recommended)
+                Upload high-quality photos of your business (minimum 3 photos
+                recommended)
               </p>
             </div>
 
@@ -376,21 +441,41 @@ const AddBusiness = () => {
             >
               {isLoading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Submitting...
                 </>
-              ) : "Submit for Verification"}
+              ) : (
+                "Submit for Verification"
+              )}
             </button>
 
             {/* Status Message */}
             {success !== null && (
-              <p className={`text-center mt-4 text-sm ${
-                success ? "text-green-600" : "text-red-600"
-              }`}>
-                {success 
+              <p
+                className={`text-center mt-4 text-sm ${
+                  success ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {success
                   ? "✓ Submitted! We'll verify your business shortly."
                   : "! Please try again or contact support@localconnect.com"}
               </p>
@@ -406,23 +491,30 @@ const AddBusiness = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 border border-gray-100 rounded-xl bg-gray-50">
               <Users className="w-8 h-8 text-gray-900 mb-4 mx-auto" />
-              <h3 className="text-xl font-semibold mb-2">Reach Local Customers</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                Reach Local Customers
+              </h3>
               <p className="text-gray-600">
-                Connect with customers in your community who are looking for your services.
+                Connect with customers in your community who are looking for
+                your services.
               </p>
             </div>
             <div className="p-6 border border-gray-100 rounded-xl bg-gray-50">
               <ShieldCheck className="w-8 h-8 text-gray-900 mb-4 mx-auto" />
               <h3 className="text-xl font-semibold mb-2">Verified Listings</h3>
               <p className="text-gray-600">
-                Gain trust with a verified badge after our team approves your business.
+                Gain trust with a verified badge after our team approves your
+                business.
               </p>
             </div>
             <div className="p-6 border border-gray-100 rounded-xl bg-gray-50">
               <Star className="w-8 h-8 text-gray-900 mb-4 mx-auto" />
-              <h3 className="text-xl font-semibold mb-2">Boost Your Reputation</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                Boost Your Reputation
+              </h3>
               <p className="text-gray-600">
-                Get reviews and ratings from satisfied customers to grow your business.
+                Get reviews and ratings from satisfied customers to grow your
+                business.
               </p>
             </div>
           </div>
