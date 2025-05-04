@@ -23,6 +23,7 @@ import {
   Home,
 } from "lucide-react";
 import NavBar from "../Components/NavBar";
+import Footer from "../Components/Footer";
 
 const AddBusiness = () => {
   const [formData, setFormData] = useState({
@@ -520,6 +521,7 @@ const AddBusiness = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

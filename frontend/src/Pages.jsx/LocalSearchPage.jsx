@@ -297,9 +297,10 @@ const LocalSearchPage = () => {
       return `⭐ ${rating.toFixed(1)}${reviews ? ` (${reviews} reviews)` : ""}`;
     }, []);
 
-    const formatPhoneNumber = useCallback((phone) => {
-      if (!phone || phone === "Phone not available") return "📞 Not available";
-      return `📞 ${phone}`;
+    const formatHours = useCallback((hours) => {
+      if (!hours) return "Hours not available";
+      if (typeof hours === "string") return hours;
+      return "Open today: " + hours;
     }, []);
 
     const fallbackImage =
@@ -308,13 +309,13 @@ const LocalSearchPage = () => {
     return (
       <div
         onClick={() => onClick(business)}
-        className="cursor-pointer bg-white rounded-xl shadow-md p-4 hover:shadow-xl transition h-full flex flex-col"
+        className="cursor-pointer bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition h-full flex flex-col group"
       >
-        <div className="relative pb-[75%] mb-4 overflow-hidden rounded-md">
+        <div className="relative pb-[60%] overflow-hidden">
           <img
             src={getImageUrl(business.photos?.[0] || business.thumbnail)}
             alt={business.name || "Business image"}
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition duration-300"
             onError={(e) => {
               if (e.target.src !== fallbackImage) {
                 e.target.onerror = null;
@@ -323,23 +324,151 @@ const LocalSearchPage = () => {
             }}
             loading="lazy"
           />
-        </div>
-        <div className="flex-grow">
-          <h3 className="text-lg font-bold line-clamp-2">
-            {business.name || "Unknown Business"}
-          </h3>
-          <p className="text-sm text-gray-500 line-clamp-1">
-            {business.location || "Location not available"}
-          </p>
-          <div className="mt-2 text-yellow-600 font-semibold">
-            {formatRating(business.rating, business.reviews)}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+            <h3 className="text-xl font-bold text-white line-clamp-2">
+              {business.name || "Unknown Business"}
+            </h3>
+            {business.category && (
+              <span className="inline-block px-2 py-1 mt-1 bg-blue-600 text-white text-xs font-semibold rounded">
+                {business.category}
+              </span>
+            )}
           </div>
-          <p className="text-sm mt-2">
-            {formatPhoneNumber(business.phoneNumber || business.phone)}
-          </p>
-          <p className="text-sm text-blue-600 mt-1">
-            💳 {formatPaymentMethods(business.paymentMethods)}
-          </p>
+        </div>
+
+        <div className="p-4 flex-grow flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-1">
+              {business.rating ? (
+                <>
+                  <span className="text-yellow-500 font-bold">
+                    {business.rating.toFixed(1)}
+                  </span>
+                  <svg
+                    className="w-4 h-4 text-yellow-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  {business.reviews > 0 && (
+                    <span className="text-gray-500 text-sm">
+                      ({business.reviews.toLocaleString()})
+                    </span>
+                  )}
+                </>
+              ) : (
+                <div></div>
+              )}
+            </div>
+
+            {business.price_level && (
+              <div className="text-green-600 font-medium">
+                {Array(Math.min(business.price_level, 4)).fill("₹").join("")}
+              </div>
+            )}
+          </div>
+
+          <div className="mb-3">
+            <div className="flex items-start space-x-2">
+              <svg
+                className="w-4 h-4 mt-0.5 text-gray-500 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <p className="text-gray-600 text-sm line-clamp-2">
+                {business.location || "Location not available"}
+              </p>
+            </div>
+
+            {business.hours && (
+              <div className="flex items-start space-x-2 mt-1">
+                <svg
+                  className="w-4 h-4 mt-0.5 text-gray-500 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-gray-600 text-sm">
+                  {formatHours(business.hours)}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-auto pt-2 border-t border-gray-100">
+            <div className="flex flex-wrap gap-2">
+              {business.paymentMethods && (
+                <div className="flex items-center space-x-1 text-xs bg-gray-100 px-2 py-1 rounded">
+                  <svg
+                    className="w-3 h-3 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>{formatPaymentMethods(business.paymentMethods)}</span>
+                </div>
+              )}
+
+              {business.service_options?.delivery && (
+                <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  Delivery
+                </div>
+              )}
+
+              {business.service_options?.takeout && (
+                <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                  Takeout
+                </div>
+              )}
+
+              {business.service_options?.dine_in && (
+                <div className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  Dine-in
+                </div>
+              )}
+            </div>
+
+            {business.phoneNumber &&
+              business.phoneNumber !== "Not available" && (
+                <div className="mt-2 flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-800">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                  </svg>
+                  <span>{business.phoneNumber}</span>
+                </div>
+              )}
+          </div>
         </div>
       </div>
     );
@@ -347,7 +476,7 @@ const LocalSearchPage = () => {
 
   const SearchResults = React.memo(({ results, onBusinessClick }) => (
     <ErrorBoundary>
-      <div className="grid gap-6 mt-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-6 mt-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {results.map((business, index) => (
           <BusinessCard
             key={`search-${business._id || business.place_id || index}`}

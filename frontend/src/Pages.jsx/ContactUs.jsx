@@ -3,6 +3,7 @@ import emailjs from "emailjs-com";
 import { Mail, User, MessageSquare, ShieldCheck, Building, Users, Star, CheckCircle } from "lucide-react";
 import NavBar from "../Components/NavBar";
 import SupportCard from "../Components/SupportCard";
+import Footer from "../Components/Footer";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -129,6 +130,7 @@ const ContactUs = () => {
         </div>
         <SupportCard/>
       </div>
+      <Footer/>
     </div>
   );
 };

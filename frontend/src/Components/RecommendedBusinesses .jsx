@@ -39,8 +39,6 @@ const RecommendedBusinesses = () => {
           );
           const data = await response.json();
           setBusinesses(data.slice(0, 4));
-          console.log(data);
-          
         }
       } catch (error) {
         console.error("Error fetching businesses:", error);

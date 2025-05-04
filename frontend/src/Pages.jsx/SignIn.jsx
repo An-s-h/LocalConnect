@@ -48,7 +48,6 @@ const SignIn = () => {
       );
 
       if (response.data) {
-        console.log("User signed in successfully:", response.data);
         setSuccess(true);
       }
     } catch (error) {

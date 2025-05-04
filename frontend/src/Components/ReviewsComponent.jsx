@@ -1,4 +1,3 @@
-// src/components/ReviewsComponent.jsx
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Star, Edit, Trash2, User, LogIn } from "lucide-react";
@@ -48,7 +47,6 @@ const ReviewsComponent = ({ businessName }) => {
 
   const handleAddReview = () => {
     if (!isAuthenticated) {
-      // Redirect to sign-in page or show a sign-in prompt
       navigate("/sign-in", { state: { from: "review" } });
       return;
     }
@@ -61,7 +59,6 @@ const ReviewsComponent = ({ businessName }) => {
       navigate("/sign-in", { state: { from: "review" } });
       return;
     }
-    // Only allow editing if the current user is the review author
     if (user.username === review.userName) {
       setEditingReview(review);
       setIsModalOpen(true);
@@ -85,12 +82,11 @@ const ReviewsComponent = ({ businessName }) => {
   const handleSubmitReview = async (reviewData) => {
     try {
       if (editingReview) {
-        // Update existing review
         const response = await axios.patch(
           `https://local-connect-one.vercel.app/api/localreviews/${editingReview._id}`,
           {
             ...reviewData,
-            userName: user.username, // Ensure username comes from context
+            userName: user.username,
           }
         );
         setReviews(
@@ -99,13 +95,12 @@ const ReviewsComponent = ({ businessName }) => {
           )
         );
       } else {
-        // Add new review
         const response = await axios.post(
           "https://local-connect-one.vercel.app/api/localreviews",
           {
             ...reviewData,
             businessName,
-            userName: user.username, // Add username from context
+            userName: user.username,
           }
         );
         setReviews([...reviews, response.data]);
@@ -129,18 +124,18 @@ const ReviewsComponent = ({ businessName }) => {
   };
 
   const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Star
-          key={i}
-          className={`h-5 w-5 ${
-            i <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
-          }`}
-        />
-      );
-    }
-    return <div className="flex">{stars}</div>;
+    return (
+      <div className="flex">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Star
+            key={i}
+            className={`h-4 w-4 sm:h-5 sm:w-5 ${
+              i <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+    );
   };
 
   if (loading)
@@ -149,12 +144,12 @@ const ReviewsComponent = ({ businessName }) => {
     return <div className="text-center py-8 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
           <span className="localconnect-font">LocalConnect Reviews</span>
           {reviews.length > 0 && (
-            <span className="ml-2 text-lg font-normal text-gray-600">
+            <span className="ml-2 text-sm sm:text-lg font-normal text-gray-600">
               ({reviews.length} reviews, {averageRating.toFixed(1)} avg)
             </span>
           )}
@@ -162,23 +157,24 @@ const ReviewsComponent = ({ businessName }) => {
         {isAuthenticated ? (
           <button
             onClick={handleAddReview}
-            className="px-5 py-2.5 bg-gradient-to-r bg-black text-white font-medium rounded-lg hover:from-bg-gray-500 hover:to-gray-500 transition-all flex items-center gap-2 shadow-lg"
+            className="w-full sm:w-auto px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-700 transition-all flex items-center justify-center gap-2 shadow-md text-sm sm:text-base"
           >
-            Write Review as {user.username}
+            <Edit className="h-4 w-4" />
+            <span>Review as {user.username.split(" ")[0]}</span>
           </button>
         ) : (
           <button
             onClick={() => navigate("/sign-in", { state: { from: "review" } })}
-            className="px-5 py-2.5 bg-gradient-to-r bg-black text-white font-medium rounded-lg hover:from-bg-gray-500 hover:to-gray-500 transition-all flex items-center gap-2 shadow-lg"
+            className="w-full sm:w-auto px-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-700 transition-all flex items-center justify-center gap-2 shadow-md text-sm sm:text-base"
           >
-            <LogIn className="h-5 w-5" />
-            Sign In to Review
+            <LogIn className="h-4 w-4" />
+            <span>Sign In to Review</span>
           </button>
         )}
       </div>
 
       {reviews.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-8 bg-gray-50 rounded-lg">
           <p className="text-gray-500">
             {isAuthenticated
               ? "No reviews yet. Be the first to review!"
@@ -186,21 +182,24 @@ const ReviewsComponent = ({ businessName }) => {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {reviews.map((review) => (
-            <div key={review._id} className="bg-white p-6 rounded-lg shadow-md">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-gray-200 p-2 rounded-full">
-                    <User className="h-6 w-6 text-gray-600" />
+            <div
+              key={review._id}
+              className="bg-white p-4 sm:p-6 rounded-lg shadow-sm sm:shadow-md"
+            >
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex items-start sm:items-center space-x-3">
+                  <div className="bg-gray-200 p-1.5 sm:p-2 rounded-full">
+                    <User className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">
+                    <h3 className="font-medium text-gray-900 text-sm sm:text-base">
                       {review.userName}
                     </h3>
-                    <div className="flex items-center mt-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center mt-1 gap-1 sm:gap-2">
                       {renderStars(review.rating)}
-                      <span className="ml-2 text-sm text-gray-500">
+                      <span className="text-xs sm:text-sm text-gray-500">
                         {new Date(review.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -210,22 +209,24 @@ const ReviewsComponent = ({ businessName }) => {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEditReview(review)}
-                      className="text-gray-500 hover:text-blue-600 transition"
+                      className="text-gray-500 hover:text-blue-600 transition p-1"
                       aria-label="Edit review"
                     >
-                      <Edit className="h-5 w-5" />
+                      <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteReview(review._id)}
-                      className="text-gray-500 hover:text-red-600 transition"
+                      className="text-gray-500 hover:text-red-600 transition p-1"
                       aria-label="Delete review"
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                   </div>
                 )}
               </div>
-              <p className="mt-4 text-gray-700">{review.comment}</p>
+              <p className="mt-3 text-gray-700 text-sm sm:text-base">
+                {review.comment}
+              </p>
             </div>
           ))}
         </div>

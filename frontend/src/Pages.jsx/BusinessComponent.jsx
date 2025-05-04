@@ -22,39 +22,89 @@ function BusinessComponent() {
   const businessData = location.state?.businessData;
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [reviewsError, setReviewsError] = useState(null);
-  const [averageRating, setAverageRating] = useState(businessData?.rating || 0);
-  const [totalReviews, setTotalReviews] = useState(businessData?.reviews || 0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [currentDayHours, setCurrentDayHours] = useState(null);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (!businessData?.place_id) return;
+    const fetchAllRatings = async () => {
+      if (!businessData?.title) return;
 
       setLoadingReviews(true);
       setReviewsError(null);
+
       try {
-        const response = await axios.get(
-          `https://local-connect-one.vercel.app/api/business-reviews/${businessData.place_id}`
+        // First try to fetch from our local reviews API
+        const localResponse = await axios.get(
+          `https://local-connect-one.vercel.app/api/localreviews/${encodeURIComponent(
+            businessData.title
+          )}`
         );
 
-        if (response.data.error) {
-          throw new Error(response.data.error);
+        if (localResponse.data.length > 1) {
+          // Calculate average from our local reviews
+          const sum = localResponse.data.reduce(
+            (acc, review) => acc + review.rating,
+            0
+          );
+          const avg = sum / localResponse.data.length;
+          setAverageRating(avg);
+          setTotalReviews(localResponse.data.length);
+        } else {
+          // If no local reviews, fall back to business data or external API
+          if (businessData?.place_id) {
+            const externalResponse = await axios.get(
+              `https://local-connect-one.vercel.app/api/business-reviews/${businessData.place_id}`
+            );
+
+            if (externalResponse.data.error) {
+              throw new Error(externalResponse.data.error);
+            }
+
+            setAverageRating(
+              externalResponse.data.average_rating || businessData.rating || 0
+            );
+            setTotalReviews(
+              externalResponse.data.total_reviews || businessData.reviews || 0
+            );
+          } else {
+            // Fall back to business data if no external API available
+            setAverageRating(businessData.rating || 0);
+            setTotalReviews(businessData.reviews || 0);
+          }
         }
-
-        setAverageRating(
-          response.data.average_rating || businessData.rating || 0
-        );
-        setTotalReviews(
-          response.data.total_reviews || businessData.reviews || 0
-        );
       } catch (error) {
         console.error("Error fetching reviews:", error);
         setReviewsError(error.message || "Failed to load reviews");
+        // Fall back to business data if API calls fail
+        setAverageRating(businessData.rating || 0);
+        setTotalReviews(businessData.reviews || 0);
       }
       setLoadingReviews(false);
     };
 
-    fetchReviews();
-  }, [businessData?.place_id]);
+    fetchAllRatings();
+  }, [businessData]);
+
+  useEffect(() => {
+    // Extract current day's hours if available
+    if (businessData?.hours) {
+      const today = new Date().toLocaleString("en-us", { weekday: "long" });
+      const hoursStr = businessData.hours.toString();
+
+      // Try to find today's hours in different formats
+      const todayRegex = new RegExp(`${today}[^a-z]*([a-z0-9,: -]+)`, "i");
+      const match = hoursStr.match(todayRegex);
+
+      if (match && match[1]) {
+        setCurrentDayHours(match[1].trim());
+      } else if (hoursStr.includes("Open 24 hours")) {
+        setCurrentDayHours("Open 24 hours");
+      } else if (hoursStr.includes("Open daily")) {
+        setCurrentDayHours("Open daily");
+      }
+    }
+  }, [businessData?.hours]);
 
   if (!businessData) {
     return (
@@ -120,6 +170,32 @@ function BusinessComponent() {
     return <div className="flex">{stars}</div>;
   };
 
+  // Format phone number for display
+  const formatPhoneNumber = (phone) => {
+    if (!phone || phone === "Phone not available") return null;
+
+    // Remove all non-digit characters
+    const cleaned = phone.replace(/\D/g, "");
+
+    // Format as (XXX) XXX-XXXX if it's 10 digits
+    if (cleaned.length === 10) {
+      return `(${cleaned.substring(0, 3)}) ${cleaned.substring(
+        3,
+        6
+      )}-${cleaned.substring(6)}`;
+    }
+
+    // Return original if formatting doesn't apply
+    return phone;
+  };
+
+  const displayPhone = formatPhoneNumber(businessData.phone);
+  const hasPhone = displayPhone !== null;
+  const hasHours =
+    businessData.hours && businessData.hours !== "Hours not available";
+  const isOpenNow =
+    currentDayHours && !currentDayHours.toLowerCase().includes("closed");
+
   return (
     <div className="flex flex-col bg-gray-50">
       <div className="pt-20 bg-black">
@@ -161,23 +237,67 @@ function BusinessComponent() {
               <div className="inline-flex items-center bg-gray-100 px-4 py-2 rounded-full">
                 <Star className="h-5 w-5 text-gray-700 mr-2" />
                 <span className="font-medium text-gray-700">
-                  {averageRating || "N/A"} ({totalReviews || "0"} reviews)
+                  {loadingReviews ? (
+                    <span className="inline-flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Loading...
+                    </span>
+                  ) : (
+                    <>
+                      {averageRating ? averageRating.toFixed(1) : "N/A"} (
+                      {totalReviews || "0"} reviews)
+                    </>
+                  )}
                 </span>
               </div>
 
               <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <Clock className="h-6 w-6 text-gray-700 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Hours
-                    </h3>
-                    <p className="text-gray-600">{businessData.hours}</p>
-                    <span className="inline-block mt-2 px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-                      Open Now
-                    </span>
+                {hasHours && (
+                  <div className="flex items-start gap-4">
+                    <Clock className="h-6 w-6 text-gray-700 mt-1" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Hours
+                      </h3>
+                      {currentDayHours ? (
+                        <>
+                          <p className="text-gray-600">
+                            Today: {currentDayHours}
+                          </p>
+                          {isOpenNow && (
+                            <span className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                              Open Now
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-gray-600">{businessData.hours}</p>
+                      )}
+                      <button className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                        See all hours <ChevronRight className="h-4 w-4 ml-1" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="flex items-start gap-4">
                   <MapPin className="h-6 w-6 text-gray-700 mt-1" />
@@ -204,30 +324,32 @@ function BusinessComponent() {
 
             {/* Right Column */}
             <div className="space-y-8">
-              <div className="bg-gray-100 p-6 rounded-xl">
-                <div className="flex items-center gap-4 mb-4">
-                  <Phone className="h-8 w-8 text-gray-700" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Contact
-                    </h3>
-                    <p className="text-2xl font-medium text-gray-900">
-                      {businessData.phone}
-                    </p>
+              {hasPhone && (
+                <div className="bg-gray-100 p-6 rounded-xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <Phone className="h-8 w-8 text-gray-700" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Contact
+                      </h3>
+                      <p className="text-2xl font-medium text-gray-900">
+                        {displayPhone}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <a
+                      href={`tel:${businessData.phone.replace(/\D/g, "")}`}
+                      className="flex-1 bg-gray-900 text-white py-3 rounded-lg text-center hover:bg-gray-800 transition-colors"
+                    >
+                      Call Now
+                    </a>
+                    <button className="flex-1 bg-white border border-gray-900 text-gray-900 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                      Message
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-4">
-                  <a
-                    href={`tel:${businessData.phone}`}
-                    className="flex-1 bg-gray-900 text-white py-3 rounded-lg text-center hover:bg-gray-800 transition-colors"
-                  >
-                    Call Now
-                  </a>
-                  <button className="flex-1 bg-white border border-gray-900 text-gray-900 py-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    Message
-                  </button>
-                </div>
-              </div>
+              )}
 
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -249,7 +371,7 @@ function BusinessComponent() {
         </div>
 
         {/* Facilities / Payment / Signature */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="bg-white p-6 rounded-xl shadow-lg">
             <h3 className="text-xl font-semibold mb-4">Facilities</h3>
             <ul className="space-y-3">
@@ -263,18 +385,6 @@ function BusinessComponent() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">Signature Offers</h3>
-            <div className="space-y-4">
-              <div className="pb-2 border-b border-gray-100">
-                <h4 className="font-medium text-gray-900">Special Discount</h4>
-                <p className="text-sm text-gray-600">
-                  Mention this listing for 10% off
-                </p>
-              </div>
-            </div>
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-lg">

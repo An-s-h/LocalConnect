@@ -1,5 +1,6 @@
 import React from "react";
 import { Twitter, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -9,7 +10,7 @@ const Footer = () => {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold localconnect-font">LocalConnect</h2>
           <p className="text-gray-400 text-sm">
-            Connecting Communities, Empowering Local Businesses
+            Connecting Dehradun's Communities, Empowering Local Businesses
           </p>
           <div className="flex items-center space-x-4">
             <a href="#" className="text-gray-400 hover:text-white transition">
@@ -25,10 +26,18 @@ const Footer = () => {
         <div className="space-y-4">
           <h3 className="font-semibold text-lg">Quick Links</h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="#" className="hover:text-white transition">Home</a></li>
-            <li><a href="#" className="hover:text-white transition">List Your Business</a></li>
-            <li><a href="#" className="hover:text-white transition">About Us</a></li>
-            <li><a href="#" className="hover:text-white transition">Contact</a></li>
+            <li>
+              <Link to="/" className="hover:text-white transition">Home</Link>
+            </li>
+            <li>
+              <Link to="/add-business" className="hover:text-white transition">List Your Business</Link>
+            </li>
+            <li>
+              <Link to="/categories" className="hover:text-white transition">Categories</Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-white transition">Contact</Link>
+            </li>
           </ul>
         </div>
 
@@ -52,11 +61,11 @@ const Footer = () => {
             </div>
             <div className="flex items-center gap-2">
               <MapPin size={16} />
-              <span>123 Local Street, Community City</span>
+              <span>Dehradun, Uttarakhand 248001</span>
             </div>
             <div className="flex items-center gap-2">
               <Phone size={16} />
-              <span>+1 (800) 555-0192</span>
+              <span>+91 8057639666</span>
             </div>
           </div>
         </div>
