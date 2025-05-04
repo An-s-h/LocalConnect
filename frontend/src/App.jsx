@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'; // <-- Add BrowserRouter
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages.jsx/Home';
 import Categories from './Pages.jsx/Categories';
 import ContactUs from './Pages.jsx/ContactUs';
@@ -12,16 +12,15 @@ import AdminPage from './Pages.jsx/AdminPage';
 import LocalSearchPage from './Pages.jsx/LocalSearchPage';
 import { UserProvider } from './Contexts/UserContext';
 import { LocationProvider } from './Contexts/LocationContext';
-import ScrollToTop from './Components/ScrollToTop'; // Assuming this is made correctly
+import ScrollToTop from './Components/ScrollToTop';
 
 const App = () => {
   return (
-   
+    <BrowserRouter>
       <LocationProvider>
         <UserProvider>
+          <ScrollToTop />
 
-          <ScrollToTop /> {/* <-- Add this inside here */}
-          
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/categories" element={<Categories />} />
@@ -38,7 +37,7 @@ const App = () => {
 
         </UserProvider>
       </LocationProvider>
-    
+    </BrowserRouter>
   );
 }
 
