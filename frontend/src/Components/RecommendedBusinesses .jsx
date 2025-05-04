@@ -38,8 +38,9 @@ const RecommendedBusinesses = () => {
             "https://local-connect-one.vercel.app/api/businesses/"
           );
           const data = await response.json();
-          console.log(data);
           setBusinesses(data.slice(0, 4));
+          console.log(data);
+          
         }
       } catch (error) {
         console.error("Error fetching businesses:", error);

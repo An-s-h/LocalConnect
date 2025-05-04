@@ -1,4 +1,3 @@
-//index.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -17,37 +16,30 @@ cloudinary.config({
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+// CORS Setup
 app.use(cors({
-  origin: 'https://local-connect-47.vercel.app', // ✅ remove trailing slash
+  origin: 'https://local-connect-47.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  credentials: true // ✅ add this if you're using cookies/sessions
+  credentials: true
 }));
 
-app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
-mongoose.connect(process.env.MONGO_URI, { bufferCommands: false })
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
-
-
 // Enhanced image quality helper function
 const enhanceImageUrl = (url, size = 800) => {
   if (!url) return null;
-  
-  // Handle Google images
+
   if (url.includes('googleusercontent.com')) {
-    return url.replace(/=s\d+-c/, `=s${size}-c`)
-             .replace(/=w\d+-h\d+/, `=w${size}-h${size}`);
+    return url.replace(/=s\d+-c/, `=s${size}-c`).replace(/=w\d+-h\d+/, `=w${size}-h${size}`);
   }
-  
-  // Handle Cloudinary images
+
   if (url.includes('cloudinary.com')) {
     return url.replace(/upload\//, `upload/q_auto:best,w_${size}/`);
   }
-  
+
   return url;
 };
 
@@ -72,9 +64,7 @@ app.get("/api/local-search", async (req, res) => {
 
   try {
     getJson(params, (json) => {
-      if (json.error) {
-        return res.status(500).json({ error: json.error });
-      }
+      if (json.error) return res.status(500).json({ error: json.error });
 
       const processedResults = (json.local_results || []).map((result) => ({
         position: result.position,
@@ -93,7 +83,7 @@ app.get("/api/local-search", async (req, res) => {
         service_options: result.service_options || {},
         description: result.description || `${result.title} - ${result.type}`
       }));
-      
+
       res.json({
         search_metadata: json.search_metadata || {},
         search_parameters: json.search_parameters || {},
@@ -121,9 +111,7 @@ app.get("/api/business/:place_id", async (req, res) => {
 
   try {
     getJson(params, (json) => {
-      if (json.error) {
-        return res.status(404).json({ error: "Business not found" });
-      }
+      if (json.error) return res.status(404).json({ error: "Business not found" });
 
       const place = json.place_results || {};
       const businessData = {
@@ -134,8 +122,8 @@ app.get("/api/business/:place_id", async (req, res) => {
         rating: place.rating,
         reviews: place.reviews,
         thumbnail: enhanceImageUrl(place.thumbnail, 1200) || 
-                 enhanceImageUrl(place.photos?.[0], 1200) || 
-                 "https://via.placeholder.com/1200x800?text=Business+Image",
+                   enhanceImageUrl(place.photos?.[0], 1200) || 
+                   "https://via.placeholder.com/1200x800?text=Business+Image",
         hours: place.hours || place.operating_hours || "Not available",
         description: place.description || `${place.title} - ${place.type}`,
         payment_methods: place.payment_options || ["Cash", "Card", "UPI"],
@@ -154,13 +142,12 @@ app.get("/api/business/:place_id", async (req, res) => {
   }
 });
 
-// Business Reviews Endpoint - UPDATED
-// Updated Business Reviews Endpoint
+// Business Reviews Endpoint
 app.get("/api/business-reviews/:place_id", async (req, res) => {
   const { place_id } = req.params;
-  
+
   if (!place_id) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: "Place ID is required",
       details: "No place_id parameter provided in the URL"
     });
@@ -175,13 +162,9 @@ app.get("/api/business-reviews/:place_id", async (req, res) => {
   };
 
   try {
-    // Using promise-based approach instead of callback
     const response = await new Promise((resolve, reject) => {
       getJson(params, (json) => {
-        if (json.error) {
-          reject(json.error);
-        return;
-        }
+        if (json.error) return reject(json.error);
         resolve(json);
       });
     });
@@ -192,27 +175,23 @@ app.get("/api/business-reviews/:place_id", async (req, res) => {
       text: review.snippet || review.review || "No review text available",
       date: review.date || "Unknown date",
       relative_time: review.relative_time || "",
-      profile_photo: enhanceImageUrl(review.user?.profile_photo, 100) || 
-                    "https://via.placeholder.com/100?text=User"
+      profile_photo: enhanceImageUrl(review.user?.profile_photo, 100) ||
+        "https://via.placeholder.com/100?text=User"
     }));
 
     res.json({
       success: true,
       reviews: processedReviews,
-      average_rating: response.place_results?.rating || 
-                     response.rating || 
-                     null,
-      total_reviews: response.place_results?.reviews || 
-                    response.reviews || 
-                    0
+      average_rating: response.place_results?.rating || response.rating || null,
+      total_reviews: response.place_results?.reviews || response.reviews || 0
     });
 
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to fetch reviews",
       details: error.message || "Unknown error occurred",
-      place_id: place_id // Echo back the place_id for debugging
+      place_id: place_id
     });
   }
 });
@@ -229,9 +208,27 @@ app.use('/api/users', userRoutes);
 const businessRoutes = require('./routes/businessRoutes');
 app.use('/api/businesses', businessRoutes);
 
-const reviewRoutes=require('./routes/reviewRoutes');
-app.use('/api/localreviews',reviewRoutes);
+const reviewRoutes = require('./routes/reviewRoutes');
+app.use('/api/localreviews', reviewRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`); 
-});
+// Start Server Only After MongoDB Connects
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      bufferCommands: false
+    });
+    console.log("✅ MongoDB Connected");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error.message);
+    process.exit(1); // Exit process if DB connection fails
+  }
+};
+
+startServer();
