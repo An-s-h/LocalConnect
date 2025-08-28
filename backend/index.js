@@ -17,12 +17,9 @@ cloudinary.config({
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// CORS Setup
-app.use(cors({
-  origin: 'https://local-connect-47.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  credentials: true
-}));
+
+app.use(cors());
+
 
 app.use(bodyParser.json());
 app.use(express.json({ limit: "100mb" }));
